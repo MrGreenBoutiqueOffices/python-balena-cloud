@@ -157,7 +157,7 @@ SOFTWARE.
 <!-- MARKDOWN LINKS & IMAGES -->
 [build-shield]: https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/actions/workflows/tests.yaml/badge.svg
 [build-url]: https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/actions/workflows/tests.yaml
-[codecov-shield]: https://codecov.io/gh/MrGreenBoutiqueOffices/python-balena-cloud/branch/main/graph/badge.svg?token=TOKEN
+[codecov-shield]: https://codecov.io/gh/MrGreenBoutiqueOffices/python-balena-cloud/branch/main/graph/badge.svg?token=1DG9LQJNY6
 [codecov-url]: https://codecov.io/gh/MrGreenBoutiqueOffices/python-balena-cloud
 [commits-shield]: https://img.shields.io/github/commit-activity/y/MrGreenBoutiqueOffices/python-balena-cloud.svg
 [commits-url]: https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/commits/main
