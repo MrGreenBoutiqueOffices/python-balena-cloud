@@ -1,0 +1,140 @@
+{
+  "d": [
+    {
+      "id": 1,
+      "belongs_to__application": {
+        "__id": 1
+      },
+      "belongs_to__user": null,
+      "actor": {
+        "__id": 1
+      },
+      "is_pinned_on__release": null,
+      "device_name": "Device_1",
+      "is_of__device_type": {
+        "__id": 1
+      },
+      "uuid": "00000000000000000000000000000001",
+      "is_running__release": {
+        "__id": 1
+      },
+      "note": null,
+      "local_id": null,
+      "status": "Idle",
+      "update_status": "done",
+      "last_update_status_event": "2024-01-01T00:00:00.000Z",
+      "is_online": true,
+      "last_connectivity_event": "2024-01-01T00:00:00.000Z",
+      "is_connected_to_vpn": true,
+      "last_vpn_event": "2024-01-01T00:00:00.000Z",
+      "ip_address": "10.0.0.1",
+      "mac_address": "00:00:00:00:00:01 00:00:00:00:00:02",
+      "public_address": "192.0.2.1",
+      "os_version": "OS 1.0",
+      "os_variant": "dev",
+      "supervisor_version": "1.0.0",
+      "should_be_managed_by__release": {
+        "__id": 1
+      },
+      "should_be_operated_by__release": {
+        "__id": 1
+      },
+      "is_managed_by__service_instance": {
+        "__id": 1
+      },
+      "provisioning_progress": null,
+      "provisioning_state": "",
+      "download_progress": null,
+      "is_web_accessible": true,
+      "longitude": "0.0000",
+      "latitude": "0.0000",
+      "location": "Location",
+      "custom_longitude": null,
+      "custom_latitude": null,
+      "is_locked_until__date": null,
+      "is_accessible_by_support_until__date": null,
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "modified_at": "2024-01-01T00:00:00.000Z",
+      "is_active": true,
+      "api_heartbeat_state": "online",
+      "changed_api_heartbeat_state_on__date": "2024-01-01T00:00:00.000Z",
+      "memory_usage": 100,
+      "memory_total": 1000,
+      "storage_block_device": "/dev/sda1",
+      "storage_usage": 500,
+      "storage_total": 1000,
+      "cpu_temp": 40,
+      "cpu_usage": 5,
+      "cpu_id": "0000000000000001",
+      "is_undervolted": false
+    },
+    {
+      "id": 2,
+      "belongs_to__application": {
+        "__id": 1
+      },
+      "belongs_to__user": null,
+      "actor": {
+        "__id": 2
+      },
+      "is_pinned_on__release": null,
+      "device_name": "Device_2",
+      "is_of__device_type": {
+        "__id": 1
+      },
+      "uuid": "00000000000000000000000000000002",
+      "is_running__release": {
+        "__id": 2
+      },
+      "note": null,
+      "local_id": null,
+      "status": "Idle",
+      "update_status": "done",
+      "last_update_status_event": "2024-01-02T00:00:00.000Z",
+      "is_online": false,
+      "last_connectivity_event": "2024-01-02T00:00:00.000Z",
+      "is_connected_to_vpn": false,
+      "last_vpn_event": "2024-01-02T00:00:00.000Z",
+      "ip_address": "10.0.0.2",
+      "mac_address": "00:00:00:00:00:03 00:00:00:00:00:04",
+      "public_address": "192.0.2.2",
+      "os_version": "OS 1.1",
+      "os_variant": "prod",
+      "supervisor_version": "1.0.1",
+      "should_be_managed_by__release": {
+        "__id": 2
+      },
+      "should_be_operated_by__release": {
+        "__id": 2
+      },
+      "is_managed_by__service_instance": {
+        "__id": 2
+      },
+      "provisioning_progress": null,
+      "provisioning_state": "",
+      "download_progress": null,
+      "is_web_accessible": false,
+      "longitude": "1.0000",
+      "latitude": "1.0000",
+      "location": "Location",
+      "custom_longitude": null,
+      "custom_latitude": null,
+      "is_locked_until__date": null,
+      "is_accessible_by_support_until__date": null,
+      "created_at": "2024-01-02T00:00:00.000Z",
+      "modified_at": "2024-01-02T00:00:00.000Z",
+      "is_active": true,
+      "api_heartbeat_state": "offline",
+      "changed_api_heartbeat_state_on__date": "2024-01-02T00:00:00.000Z",
+      "memory_usage": 200,
+      "memory_total": 2000,
+      "storage_block_device": "/dev/sdb1",
+      "storage_usage": 1000,
+      "storage_total": 2000,
+      "cpu_temp": 50,
+      "cpu_usage": 10,
+      "cpu_id": "0000000000000002",
+      "is_undervolted": false
+    }
+  ]
+}

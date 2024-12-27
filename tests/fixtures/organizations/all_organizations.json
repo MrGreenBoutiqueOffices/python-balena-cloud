@@ -1,0 +1,30 @@
+{
+  "d": [
+    {
+      "id": 1,
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "name": "Organization_1",
+      "handle": "org_1",
+      "company_name": "Company 1",
+      "website": null,
+      "industry": null,
+      "billing_account_code": null,
+      "has_past_due_invoice_since__date": null,
+      "is_frozen": false,
+      "is_enforcing_saml_login": false
+    },
+    {
+      "id": 2,
+      "created_at": "2024-01-02T00:00:00.000Z",
+      "name": "Organization_2",
+      "handle": "org_2",
+      "company_name": "Company 2",
+      "website": null,
+      "industry": null,
+      "billing_account_code": null,
+      "has_past_due_invoice_since__date": null,
+      "is_frozen": false,
+      "is_enforcing_saml_login": false
+    }
+  ]
+}

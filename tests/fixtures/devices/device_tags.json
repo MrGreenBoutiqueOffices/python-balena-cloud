@@ -1,0 +1,28 @@
+{
+  "d": [
+    {
+      "id": 1,
+      "device": {
+        "__id": 1
+      },
+      "tag_key": "tag_1",
+      "value": "value_1"
+    },
+    {
+      "id": 2,
+      "device": {
+        "__id": 2
+      },
+      "tag_key": "tag_2",
+      "value": "value_2"
+    },
+    {
+      "id": 3,
+      "device": {
+        "__id": 3
+      },
+      "tag_key": "tag_3",
+      "value": "value_3"
+    }
+  ]
+}
