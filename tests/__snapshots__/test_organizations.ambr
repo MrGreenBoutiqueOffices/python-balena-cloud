@@ -1,0 +1,13 @@
+# serializer version: 1
+# name: test_get_organization[org_handle-test-handle-/v7/organization(handle='test-handle')]
+  Organization(id=1, name='Organization_1', handle='org_1', company_name='Company 1', website='None', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_frozen=False)
+# ---
+# name: test_get_organization[org_id-1-/v7/organization(1)]
+  Organization(id=1, name='Organization_1', handle='org_1', company_name='Company 1', website='None', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_frozen=False)
+# ---
+# name: test_get_organizations
+  list([
+    Organization(id=1, name='Organization_1', handle='org_1', company_name='Company 1', website='None', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_frozen=False),
+    Organization(id=2, name='Organization_2', handle='org_2', company_name='Company 2', website='None', created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc), is_frozen=False),
+  ])
+# ---

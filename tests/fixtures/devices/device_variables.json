@@ -1,0 +1,22 @@
+{
+  "d": [
+    {
+      "created_at": "2024-01-01T00:00:00.000Z",
+      "device": {
+        "__id": 1
+      },
+      "name": "VARIABLE_1",
+      "id": 1,
+      "value": 1234567890
+    },
+    {
+      "created_at": "2024-01-02T00:00:00.000Z",
+      "device": {
+        "__id": 1
+      },
+      "name": "VARIABLE_2",
+      "id": 2,
+      "value": "TEST_1"
+    }
+  ]
+}

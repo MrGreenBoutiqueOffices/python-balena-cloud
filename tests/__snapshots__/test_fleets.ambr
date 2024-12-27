@@ -1,0 +1,28 @@
+# serializer version: 1
+# name: test_get_fleet[fleet_id-1-/v7/application(1)]
+  Fleet(id=1, name='app_1', slug='organization/app_1', uuid='00000000000000000000000000000000', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True)
+# ---
+# name: test_get_fleet[fleet_name-Test Fleet-/v7/application]
+  Fleet(id=1, name='app_1', slug='organization/app_1', uuid='00000000000000000000000000000000', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True)
+# ---
+# name: test_get_fleet[fleet_slug-test-slug-/v7/application(slug='test-slug')]
+  Fleet(id=1, name='app_1', slug='organization/app_1', uuid='00000000000000000000000000000000', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True)
+# ---
+# name: test_get_fleet_devices
+  list([
+    Device(id=1, name='Device_1', status='Idle', uuid='00000000000000000000000000000001', is_online=True, is_web_accessible=True, is_undervolted=False, latitude=0.0, longitude=0.0),
+    Device(id=2, name='Device_2', status='Idle', uuid='00000000000000000000000000000002', is_online=False, is_web_accessible=False, is_undervolted=False, latitude=1.0, longitude=1.0),
+  ])
+# ---
+# name: test_get_fleets
+  list([
+    Fleet(id=1, name='app_1', slug='organization/app_1', uuid='00000000000000000000000000000000', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True),
+    Fleet(id=2, name='app_2', slug='organization/app_2', uuid='11111111111111111111111111111111', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True),
+  ])
+# ---
+# name: test_get_organization_fleets
+  list([
+    Fleet(id=1, name='app_1', slug='organization/app_1', uuid='00000000000000000000000000000000', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True),
+    Fleet(id=2, name='app_2', slug='organization/app_2', uuid='11111111111111111111111111111111', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_public=False, is_host=False, is_archived=False, is_discoverable=True),
+  ])
+# ---
