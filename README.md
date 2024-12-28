@@ -30,6 +30,16 @@ With this python package it's possible to get your organizations, fleets and dev
 pip install balena-cloud
 ```
 
+### Get API token
+
+To use this package you need to have a Balena Cloud API token. You can get one by following the steps below:
+
+1. Go to [Balena Cloud](https://www.balena.io/) and sign in.
+2. Click on your profile icon in the top right corner.
+3. Click on **Preferences** -> **Access tokens**.
+4. Under "Api keys" click on **Create Api Key**.
+5. Give your token a (required) name, description, set an expiration date and click on **Create token**.
+
 ### Example
 
 ```python
