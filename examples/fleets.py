@@ -27,9 +27,18 @@ async def main() -> None:
         print()
         print("Getting all devices from a fleet:")
         print("=================================")
-
         devices: list[Device] = await client.get_fleet_devices(fleet_id=fleet_id)
         for device in devices:
+            print(device)
+
+        print()
+        print("Getting all devices from a fleet with a specific status:")
+        print("=========================================================")
+        filtered_devices: list[Device] = await client.get_fleet_devices(
+            fleet_id=fleet_id,
+            filters={"is_online": True},
+        )
+        for device in filtered_devices:
             print(device)
 
 

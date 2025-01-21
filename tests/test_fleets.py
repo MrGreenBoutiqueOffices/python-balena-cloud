@@ -93,6 +93,28 @@ async def test_get_fleet_devices(
     assert devices == snapshot
 
 
+async def test_get_filtered_fleet_devices(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_devices method with filters."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_devices.json"),
+        ),
+    )
+    devices = await balena_cloud_client.get_fleet_devices(
+        fleet_id=1, filters={"is_online": True}
+    )
+    assert devices == snapshot
+
+
 async def test_get_organization_fleets(
     aresponses: ResponsesMockServer,
     snapshot: SnapshotAssertion,
@@ -111,3 +133,45 @@ async def test_get_organization_fleets(
     )
     fleets = await balena_cloud_client.get_organization_fleets(org_handle="test-org")
     assert fleets == snapshot
+
+
+async def test_get_fleet_releases(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_releases method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/release",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_releases.json"),
+        ),
+    )
+    releases = await balena_cloud_client.get_fleet_releases(fleet_id=1)
+    assert releases == snapshot
+
+
+async def test_get_filtered_fleet_releases(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_releases method with filters."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/release",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_releases.json"),
+        ),
+    )
+    releases = await balena_cloud_client.get_fleet_releases(
+        fleet_id=1, filters={"is_final": True}
+    )
+    assert releases == snapshot

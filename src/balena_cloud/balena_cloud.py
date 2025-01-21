@@ -1,5 +1,6 @@
 """Asynchronous Python client for Balena Cloud."""
 
+# pylint: disable=too-many-public-methods
 from __future__ import annotations
 
 import asyncio
@@ -227,21 +228,33 @@ class BalenaCloud:
             raise BalenaCloudResourceNotFoundError(msg)
         return Fleet.from_dict(response["d"][0])
 
-    async def get_fleet_devices(self, fleet_id: int) -> list[Device]:
+    async def get_fleet_devices(
+        self,
+        fleet_id: int,
+        filters: dict[str, Any] | None = None,
+    ) -> list[Device]:
         """Get all devices from a specific fleet.
 
         Args:
         ----
             fleet_id: The fleet ID.
+            filters: Filters to apply to the request (optional).
 
         Returns:
         -------
-            A list of devices in the fleet.
+            A list of devices in the fleet with the applied filters (if any).
 
         """
-        response = await self._request(
-            "device", params={"$filter": f"belongs_to__application eq '{fleet_id}'"}
-        )
+        if filters is None:
+            response = await self._request(
+                "device",
+                params={"$filter": f"belongs_to__application eq {fleet_id}"},
+            )
+        else:
+            query = f"belongs_to__application eq {fleet_id}"
+            for key, value in filters.items():
+                query += f" and {key} eq '{value}'"
+            response = await self._request("device", params={"$filter": query})
         return [Device.from_dict(item) for item in response["d"]]
 
     async def get_fleet_releases(
