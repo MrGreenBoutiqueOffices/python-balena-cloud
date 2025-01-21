@@ -158,6 +158,24 @@ class BalenaCloud:
             raise BalenaCloudResourceNotFoundError(msg)
         return Organization.from_dict(response["d"][0])
 
+    async def get_organization_fleets(self, org_handle: str) -> list[Fleet]:
+        """Get all fleets from an organization.
+
+        Args:
+        ----
+            org_handle: The organization handle.
+
+        Returns:
+        -------
+            A list of organization fleets.
+
+        """
+        response = await self._request(
+            "application",
+            params={"$filter": f"organization/any(o:o/handle eq '{org_handle}')"},
+        )
+        return [Fleet.from_dict(item) for item in response["d"]]
+
     # Fleets
     async def get_fleets(self) -> list[Fleet]:
         """Get all fleets that is authorized by the user.
@@ -225,24 +243,6 @@ class BalenaCloud:
             "device", params={"$filter": f"belongs_to__application eq '{fleet_id}'"}
         )
         return [Device.from_dict(item) for item in response["d"]]
-
-    async def get_organization_fleets(self, org_handle: str) -> list[Fleet]:
-        """Get all fleets from an organization.
-
-        Args:
-        ----
-            org_handle: The organization handle.
-
-        Returns:
-        -------
-            A list of organization fleets.
-
-        """
-        response = await self._request(
-            "application",
-            params={"$filter": f"organization/any(o:o/handle eq '{org_handle}')"},
-        )
-        return [Fleet.from_dict(item) for item in response["d"]]
 
     # Devices
     async def get_device(
