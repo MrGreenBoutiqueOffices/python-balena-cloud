@@ -15,9 +15,7 @@ async def main() -> None:
 
         print("Get all releases from a fleet")
         print("=============================")
-        releases: list[Release] = await client.get_releases_from_fleet(
-            fleet_id=fleet_id
-        )
+        releases: list[Release] = await client.get_fleet_releases(fleet_id=fleet_id)
         for item in releases:
             print(item)
 
@@ -30,7 +28,7 @@ async def main() -> None:
         print()
         print("Get filtered releases from a fleet")
         print("===================================")
-        filtered_releases: list[Release] = await client.get_releases_from_fleet(
+        filtered_releases: list[Release] = await client.get_fleet_releases(
             fleet_id=fleet_id, filters={"is_final": False}
         )
         for release in filtered_releases:
