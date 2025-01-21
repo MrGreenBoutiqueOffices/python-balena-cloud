@@ -41,6 +41,23 @@ class Fleet(DataClassDictMixin):
 
 
 @dataclass
+class Release(DataClassDictMixin):
+    """Class to represent a release in Balena Cloud."""
+
+    id: int
+    status: str
+    semver: str
+    semver_prerelease: str
+    revision: int | str
+    created_at: datetime
+
+    # Boolean fields
+    is_final: bool
+    is_invalidated: bool
+    is_passing_tests: bool
+
+
+@dataclass
 class Device(DataClassDictMixin):
     """Class to represent a device in Balena Cloud."""
 
