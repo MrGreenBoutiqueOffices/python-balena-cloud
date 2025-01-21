@@ -10,7 +10,6 @@ from balena_cloud import BalenaCloud, Device, Fleet
 async def main() -> None:
     """Show example of using the Balena Cloud API."""
     async with BalenaCloud(token="") as client:
-        organization: str = ""
         fleet_id: int = 1234567
 
         print("Get all fleets")
@@ -24,12 +23,6 @@ async def main() -> None:
         print("================================")
         fleet = await client.get_fleet(fleet_id=fleets[0].id)
         print(fleet)
-
-        print("Getting all fleets from the organization:")
-        print("=========================================")
-        fleets = await client.get_organization_fleets(org_handle=organization)
-        for item in fleets:
-            print(item)
 
         print()
         print("Getting all devices from a fleet:")
