@@ -1,14 +1,12 @@
-[tool.poetry]
+[project]
 name = "balena-cloud"
 version = "0.0.0"
 description = "Asynchronous Python client to interact with the Balena Cloud API"
-authors = ["Klaas Schoute <klaas@mrgreenoffices.nl>"]
-maintainers = ["Klaas Schoute <klaas@mrgreenoffices.nl>"]
+authors = [{ name="Klaas Schoute", email="<klaas@mrgreenoffices.nl>"}]
+maintainers = [{name="Klaas Schoute", email="<klaas@mrgreenoffices.nl>"}]
 license = "MIT"
+requires-python = ">=3.11"
 readme = "README.md"
-homepage = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
-repository = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
-documentation = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
 keywords = ["balena-cloud", "api", "async", "client"]
 classifiers = [
   "Framework :: AsyncIO",
@@ -21,6 +19,7 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+dynamic = ["dependencies"]
 packages = [
   { include = "balena_cloud", from = "src"},
 ]
@@ -32,7 +31,10 @@ yarl = ">=1.6.0"
 mashumaro = "^3.15"
 orjson = "^3.10.12"
 
-[tool.poetry.urls]
+[project.urls]
+homepage = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
+repository = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
+documentation = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
 "Bug Tracker" = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/issues"
 Changelog = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/releases"
 
@@ -132,7 +134,6 @@ lint.ignore = [
 
   # Conflicts with the Ruff formatter
   "COM812",
-  "ISC001",
 ]
 
 [tool.ruff.lint.flake8-pytest-style]
