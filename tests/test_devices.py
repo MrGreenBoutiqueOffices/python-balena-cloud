@@ -78,6 +78,26 @@ async def test_remove_device(
     await balena_cloud_client.device.remove(device_id=1)
 
 
+async def test_get_device_tag(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_device_tag method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_tag(1)",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/device_tag.json"),
+        ),
+    )
+    tag = await balena_cloud_client.device_tag.get(tag_id=1)
+    assert tag == snapshot
+
+
 @pytest.mark.parametrize(
     ("param_key", "param_value"),
     [
@@ -160,6 +180,26 @@ async def test_remove_device_tag(
         "DELETE",
     )
     await balena_cloud_client.device_tag.remove(tag_id=1)
+
+
+async def test_get_device_variable(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_device_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_environment_variable(1)",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/device_variable.json"),
+        ),
+    )
+    variable = await balena_cloud_client.device_variable.get(variable_id=1)
+    assert variable == snapshot
 
 
 @pytest.mark.parametrize(

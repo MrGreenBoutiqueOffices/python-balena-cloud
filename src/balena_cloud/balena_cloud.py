@@ -418,6 +418,24 @@ class BalenaCloud:
 
         parent: BalenaCloud
 
+        async def get(self, tag_id: int) -> Tag:
+            """Get a device tag by its ID.
+
+            Args:
+            ----
+                tag_id: The tag ID.
+
+            Returns:
+            -------
+                A tag object.
+
+            """
+            response = await self.parent.request(f"device_tag({tag_id})")
+            if not response["d"]:
+                msg = "No device tag found with the provided ID."
+                raise BalenaCloudResourceNotFoundError(msg)
+            return Tag.from_dict(response["d"][0])
+
         async def get_all(
             self,
             device_id: int | None = None,
@@ -516,6 +534,26 @@ class BalenaCloud:
         """Namespace for handling device variable related requests."""
 
         parent: BalenaCloud
+
+        async def get(self, variable_id: int) -> EnvironmentVariable:
+            """Get an environment variable by its ID from device.
+
+            Args:
+            ----
+                variable_id: The variable ID.
+
+            Returns:
+            -------
+                An environment variable object.
+
+            """
+            response = await self.parent.request(
+                f"device_environment_variable({variable_id})"
+            )
+            if not response["d"]:
+                msg = "No device environment variable found with the provided ID."
+                raise BalenaCloudResourceNotFoundError(msg)
+            return EnvironmentVariable.from_dict(response["d"][0])
 
         async def get_all(
             self,
