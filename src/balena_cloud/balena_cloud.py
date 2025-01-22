@@ -36,7 +36,7 @@ class BalenaCloud:
 
     _close_session: bool = False
 
-    async def _request(
+    async def request(
         self,
         uri: str,
         *,
@@ -117,437 +117,488 @@ class BalenaCloud:
             return await response.json()
         return None
 
-    # Organizations
-    async def get_organizations(self) -> list[Organization]:
-        """Get all organizations that is authorized by the user.
+    def __post_init__(self) -> None:
+        """Post namespace initialization."""
+        self.organization = self.Organization(parent=self)
+        self.fleet = self.Fleet(parent=self)
+        self.release = self.Release(parent=self)
+        self.device = self.Device(parent=self)
+        self.device_tag = self.DeviceTag(parent=self)
+        self.device_variable = self.DeviceVariable(parent=self)
 
-        Returns
-        -------
-            A list of organizations.
+    @dataclass
+    class Organization:
+        """Namespace for handling organization related requests."""
 
-        """
-        response = await self._request("organization")
-        return [Organization.from_dict(item) for item in response["d"]]
+        parent: BalenaCloud
 
-    async def get_organization(
-        self,
-        org_id: int | None = None,
-        org_handle: str | None = None,
-    ) -> Organization:
-        """Get an organization by its ID or handle.
+        async def get_all(self) -> list[Organization]:
+            """Get all organizations that is authorized by the user.
 
-        Args:
-        ----
-            org_id: The organization ID (optional).
-            org_handle: The organization handle (optional).
+            Returns
+            -------
+                A list of organizations.
 
-        Returns:
-        -------
-            An organization object.
+            """
+            response = await self.parent.request("organization")
+            return [Organization.from_dict(item) for item in response["d"]]
 
-        """
-        if org_id is None and org_handle is None:
-            msg = "You must provide either an organization ID or handle."
-            raise BalenaCloudParameterValidationError(msg)
+        async def get(
+            self,
+            org_id: int | None = None,
+            org_handle: str | None = None,
+        ) -> Organization:
+            """Get an organization by its ID or handle.
 
-        if org_id is not None:
-            response = await self._request(f"organization({org_id})")
-        else:
-            response = await self._request(f"organization(handle='{org_handle}')")
-        if not response["d"]:
-            msg = "No organization found with the provided ID or handle."
-            raise BalenaCloudResourceNotFoundError(msg)
-        return Organization.from_dict(response["d"][0])
+            Args:
+            ----
+                org_id: The organization ID (optional).
+                org_handle: The organization handle (optional).
 
-    async def get_organization_fleets(self, org_handle: str) -> list[Fleet]:
-        """Get all fleets from an organization.
+            Returns:
+            -------
+                An organization object.
 
-        Args:
-        ----
-            org_handle: The organization handle.
+            """
+            if org_id is None and org_handle is None:
+                msg = "You must provide either an organization ID or handle."
+                raise BalenaCloudParameterValidationError(msg)
 
-        Returns:
-        -------
-            A list of organization fleets.
+            if org_id is not None:
+                response = await self.parent.request(f"organization({org_id})")
+            else:
+                response = await self.parent.request(
+                    f"organization(handle='{org_handle}')"
+                )
+            if not response["d"]:
+                msg = "No organization found with the provided ID or handle."
+                raise BalenaCloudResourceNotFoundError(msg)
+            return Organization.from_dict(response["d"][0])
 
-        """
-        response = await self._request(
-            "application",
-            params={"$filter": f"organization/any(o:o/handle eq '{org_handle}')"},
-        )
-        return [Fleet.from_dict(item) for item in response["d"]]
+        async def get_fleets(self, org_handle: str) -> list[Fleet]:
+            """Get all fleets from an organization.
 
-    # Fleets
-    async def get_fleets(self) -> list[Fleet]:
-        """Get all fleets that is authorized by the user.
+            Args:
+            ----
+                org_handle: The organization handle.
 
-        Returns
-        -------
-            A list of fleets.
+            Returns:
+            -------
+                A list of organization fleets.
 
-        """
-        response = await self._request(
-            "application",
-            params={"$filter": "is_directly_accessible_by__user/any(dau:true)"},
-        )
-        return [Fleet.from_dict(item) for item in response["d"]]
-
-    async def get_fleet(
-        self,
-        fleet_id: int | None = None,
-        fleet_slug: str | None = None,
-        fleet_name: str | None = None,
-    ) -> Fleet:
-        """Get a fleet by its ID, slug or name.
-
-        Args:
-        ----
-            fleet_id: The fleet ID (optional).
-            fleet_slug: The fleet slug (optional).
-            fleet_name: The fleet name (optional).
-
-        Returns:
-        -------
-            A fleet object.
-
-        """
-        if fleet_id is None and fleet_slug is None and fleet_name is None:
-            msg = "You must provide either a fleet ID, a fleet slug or a fleet name."
-            raise BalenaCloudParameterValidationError(msg)
-
-        if fleet_id is not None:
-            response = await self._request(f"application({fleet_id})")
-        elif fleet_slug is not None:
-            response = await self._request(f"application(slug='{fleet_slug}')")
-        else:
-            response = await self._request(
-                "application", params={"$filter": f"app_name eq '{fleet_name}'"}
+            """
+            response = await self.parent.request(
+                "application",
+                params={"$filter": f"organization/any(o:o/handle eq '{org_handle}')"},
             )
-        if not response["d"]:
-            msg = "No fleet found with the provided ID, slug or name."
-            raise BalenaCloudResourceNotFoundError(msg)
-        return Fleet.from_dict(response["d"][0])
+            return [Fleet.from_dict(item) for item in response["d"]]
 
-    async def get_fleet_devices(
-        self,
-        fleet_id: int,
-        filters: dict[str, Any] | None = None,
-    ) -> list[Device]:
-        """Get all devices from a specific fleet.
+    @dataclass
+    class Fleet:
+        """Namespace for handling fleet related requests."""
 
-        Args:
-        ----
-            fleet_id: The fleet ID.
-            filters: Filters to apply to the request (optional).
+        parent: BalenaCloud
 
-        Returns:
-        -------
-            A list of devices in the fleet with the applied filters (if any).
+        async def get_all(self) -> list[Fleet]:
+            """Get all fleets that is authorized by the user.
 
-        """
-        if filters is None:
-            response = await self._request(
-                "device",
-                params={"$filter": f"belongs_to__application eq {fleet_id}"},
+            Returns
+            -------
+                A list of fleets.
+
+            """
+            response = await self.parent.request(
+                "application",
+                params={"$filter": "is_directly_accessible_by__user/any(dau:true)"},
             )
-        else:
-            query = f"belongs_to__application eq {fleet_id}"
-            for key, value in filters.items():
-                query += f" and {key} eq '{value}'"
-            response = await self._request("device", params={"$filter": query})
-        return [Device.from_dict(item) for item in response["d"]]
+            return [Fleet.from_dict(item) for item in response["d"]]
 
-    async def get_fleet_releases(
-        self,
-        fleet_id: int,
-        filters: dict[str, Any] | None = None,
-    ) -> list[Release]:
-        """Get all releases from a specific fleet.
+        async def get(
+            self,
+            fleet_id: int | None = None,
+            fleet_slug: str | None = None,
+            fleet_name: str | None = None,
+        ) -> Fleet:
+            """Get a fleet by its ID, slug or name.
 
-        Args:
-        ----
-            fleet_id: The fleet ID.
-            filters: Filters to apply to the request (optional).
+            Args:
+            ----
+                fleet_id: The fleet ID (optional).
+                fleet_slug: The fleet slug (optional).
+                fleet_name: The fleet name (optional).
 
-        Returns:
-        -------
-            A list of releases in the fleet with the applied filters (if any).
+            Returns:
+            -------
+                A fleet object.
 
-        """
-        if filters is None:
-            response = await self._request(
-                "release",
-                params={"$filter": f"belongs_to__application eq {fleet_id}"},
+            """
+            if fleet_id is None and fleet_slug is None and fleet_name is None:
+                msg = (
+                    "You must provide either a fleet ID, a fleet slug or a fleet name."
+                )
+                raise BalenaCloudParameterValidationError(msg)
+
+            if fleet_id is not None:
+                response = await self.parent.request(f"application({fleet_id})")
+            elif fleet_slug is not None:
+                response = await self.parent.request(
+                    f"application(slug='{fleet_slug}')"
+                )
+            else:
+                response = await self.parent.request(
+                    "application", params={"$filter": f"app_name eq '{fleet_name}'"}
+                )
+            if not response["d"]:
+                msg = "No fleet found with the provided ID, slug or name."
+                raise BalenaCloudResourceNotFoundError(msg)
+            return Fleet.from_dict(response["d"][0])
+
+        async def get_devices(
+            self,
+            fleet_id: int,
+            filters: dict[str, Any] | None = None,
+        ) -> list[Device]:
+            """Get all devices from a specific fleet.
+
+            Args:
+            ----
+                fleet_id: The fleet ID.
+                filters: Filters to apply to the request (optional).
+
+            Returns:
+            -------
+                A list of devices in the fleet with the applied filters (if any).
+
+            """
+            if filters is None:
+                response = await self.parent.request(
+                    "device",
+                    params={"$filter": f"belongs_to__application eq {fleet_id}"},
+                )
+            else:
+                query = f"belongs_to__application eq {fleet_id}"
+                for key, value in filters.items():
+                    query += f" and {key} eq '{value}'"
+                response = await self.parent.request(
+                    "device", params={"$filter": query}
+                )
+            return [Device.from_dict(item) for item in response["d"]]
+
+        async def get_releases(
+            self,
+            fleet_id: int,
+            filters: dict[str, Any] | None = None,
+        ) -> list[Release]:
+            """Get all releases from a specific fleet.
+
+            Args:
+            ----
+                fleet_id: The fleet ID.
+                filters: Filters to apply to the request (optional).
+
+            Returns:
+            -------
+                A list of releases in the fleet with the applied filters (if any).
+
+            """
+            if filters is None:
+                response = await self.parent.request(
+                    "release",
+                    params={"$filter": f"belongs_to__application eq {fleet_id}"},
+                )
+            else:
+                query = f"belongs_to__application eq {fleet_id}"
+                for key, value in filters.items():
+                    query += f" and {key} eq '{value}'"
+                response = await self.parent.request(
+                    "release", params={"$filter": query}
+                )
+            return [Release.from_dict(item) for item in response["d"]]
+
+    @dataclass
+    class Release:
+        """Namespace for handling release related requests."""
+
+        parent: BalenaCloud
+
+        async def get(self, release_id: int) -> Release:
+            """Get a release by its ID.
+
+            Args:
+            ----
+                release_id: The release ID.
+
+            Returns:
+            -------
+                A release object.
+
+            """
+            response = await self.parent.request(f"release({release_id})")
+            if not response["d"]:
+                msg = "No release found with the provided ID."
+                raise BalenaCloudResourceNotFoundError(msg)
+            return Release.from_dict(response["d"][0])
+
+        async def remove(self, release_id: int) -> None:
+            """Remove a release.
+
+            Args:
+            ----
+                release_id: The release ID.
+
+            """
+            await self.parent.request(f"release({release_id})", method=METH_DELETE)
+
+    @dataclass
+    class Device:
+        """Namespace for handling device related requests."""
+
+        parent: BalenaCloud
+
+        async def get(
+            self,
+            device_id: int | None = None,
+            device_uuid: str | None = None,
+        ) -> Device:
+            """Get a device by its ID.
+
+            Args:
+            ----
+                device_id: The device ID (optional).
+                device_uuid: The device UUID (optional).
+
+            Returns:
+            -------
+                A device object.
+
+            """
+            if device_id is None and device_uuid is None:
+                msg = "You must provide either a device ID or a device UUID."
+                raise BalenaCloudParameterValidationError(msg)
+
+            if device_id is not None:
+                response = await self.parent.request(f"device({device_id})")
+            else:
+                response = await self.parent.request(f"device(uuid='{device_uuid}')")
+            if not response["d"]:
+                msg = "No device found with the provided ID or UUID."
+                raise BalenaCloudResourceNotFoundError(msg)
+            return Device.from_dict(response["d"][0])
+
+        async def update(
+            self,
+            device_id: int,
+            data: dict[str, str],
+        ) -> None:
+            """Change a device with the provided data.
+
+            Args:
+            ----
+                device_id: The device ID.
+                data: The data to update the device.
+
+            """
+            await self.parent.request(
+                f"device({device_id})", method=METH_PATCH, data=data
             )
-        else:
-            query = f"belongs_to__application eq {fleet_id}"
-            for key, value in filters.items():
-                query += f" and {key} eq '{value}'"
-            response = await self._request("release", params={"$filter": query})
-        return [Release.from_dict(item) for item in response["d"]]
 
-    # Releases
-    async def get_release(self, release_id: int) -> Release:
-        """Get a release by its ID.
+        async def remove(self, device_id: int) -> None:
+            """Remove a device.
 
-        Args:
-        ----
-            release_id: The release ID.
+            Args:
+            ----
+                device_id: The device ID.
 
-        Returns:
-        -------
-            A release object.
+            """
+            await self.parent.request(f"device({device_id})", method=METH_DELETE)
 
-        """
-        response = await self._request(f"release({release_id})")
-        if not response["d"]:
-            msg = "No release found with the provided ID."
-            raise BalenaCloudResourceNotFoundError(msg)
-        return Release.from_dict(response["d"][0])
+    @dataclass
+    class DeviceTag:
+        """Namespace for handling device tag related requests."""
 
-    async def remove_release(self, release_id: int) -> None:
-        """Remove a release.
+        parent: BalenaCloud
 
-        Args:
-        ----
-            release_id: The release ID.
+        async def get_all(
+            self,
+            device_id: int | None = None,
+            device_uuid: str | None = None,
+        ) -> list[Tag]:
+            """Get all tags from a device.
 
-        """
-        await self._request(f"release({release_id})", method=METH_DELETE)
+            Args:
+            ----
+                device_id: The device ID (optional).
+                device_uuid: The device UUID (optional).
 
-    # Devices
-    async def get_device(
-        self,
-        device_id: int | None = None,
-        device_uuid: str | None = None,
-    ) -> Device:
-        """Get a device by its ID.
+            Returns:
+            -------
+                A list of tags in the device.
 
-        Args:
-        ----
-            device_id: The device ID (optional).
-            device_uuid: The device UUID (optional).
+            """
+            if device_id is None and device_uuid is None:
+                msg = "You must provide either a device ID or a device UUID."
+                raise BalenaCloudParameterValidationError(msg)
 
-        Returns:
-        -------
-            A device object.
+            if device_id is not None:
+                response = await self.parent.request(
+                    "device_tag",
+                    params={"$filter": f"device eq {device_id}"},
+                )
+            else:
+                response = await self.parent.request(
+                    "device_tag",
+                    params={"$filter": f"device/uuid eq '{device_uuid}'"},
+                )
+            return [Tag.from_dict(item) for item in response["d"]]
 
-        """
-        if device_id is None and device_uuid is None:
-            msg = "You must provide either a device ID or a device UUID."
-            raise BalenaCloudParameterValidationError(msg)
+        async def add(
+            self,
+            device_id: int,
+            key: str,
+            value: str,
+        ) -> Tag:
+            """Add a new tag to a device.
 
-        if device_id is not None:
-            response = await self._request(f"device({device_id})")
-        else:
-            response = await self._request(f"device(uuid='{device_uuid}')")
-        if not response["d"]:
-            msg = "No device found with the provided ID or UUID."
-            raise BalenaCloudResourceNotFoundError(msg)
-        return Device.from_dict(response["d"][0])
+            Args:
+            ----
+                device_id: The device ID.
+                key: The tag key.
+                value: The tag value.
 
-    async def update_device(
-        self,
-        device_id: int,
-        data: dict[str, str],
-    ) -> None:
-        """Change a device with the provided data.
+            Returns:
+            -------
+                The tag object.
 
-        Args:
-        ----
-            device_id: The device ID.
-            data: The data to update the device.
-
-        """
-        await self._request(f"device({device_id})", method=METH_PATCH, data=data)
-
-    async def remove_device(self, device_id: int) -> None:
-        """Remove a device.
-
-        Args:
-        ----
-            device_id: The device ID.
-
-        """
-        await self._request(f"device({device_id})", method=METH_DELETE)
-
-    # Device - Tags
-    async def get_device_tags(
-        self,
-        device_id: int | None = None,
-        device_uuid: str | None = None,
-    ) -> list[Tag]:
-        """Get all tags from a device.
-
-        Args:
-        ----
-            device_id: The device ID (optional).
-            device_uuid: The device UUID (optional).
-
-        Returns:
-        -------
-            A list of tags in the device.
-
-        """
-        if device_id is None and device_uuid is None:
-            msg = "You must provide either a device ID or a device UUID."
-            raise BalenaCloudParameterValidationError(msg)
-
-        if device_id is not None:
-            response = await self._request(
+            """
+            response = await self.parent.request(
                 "device_tag",
-                params={"$filter": f"device eq {device_id}"},
+                method=METH_POST,
+                data={"device": device_id, "tag_key": key, "value": value},
             )
-        else:
-            response = await self._request(
-                "device_tag",
-                params={"$filter": f"device/uuid eq '{device_uuid}'"},
+            return Tag.from_dict(response)
+
+        async def update(
+            self,
+            device_id: int,
+            key: str,
+            value: str,
+        ) -> None:
+            """Update a tag from a device.
+
+            Args:
+            ----
+                device_id: The device ID.
+                key: The tag key.
+                value: The new tag value.
+
+            """
+            await self.parent.request(
+                f"device_tag(device={device_id},tag_key='{key}')",
+                method=METH_PATCH,
+                data={"value": value},
             )
-        return [Tag.from_dict(item) for item in response["d"]]
 
-    async def add_device_tag(
-        self,
-        device_id: int,
-        key: str,
-        value: str,
-    ) -> Tag:
-        """Add a new tag to a device.
+        async def remove(self, tag_id: int) -> None:
+            """Remove a tag from a device.
 
-        Args:
-        ----
-            device_id: The device ID.
-            key: The tag key.
-            value: The tag value.
+            Args:
+            ----
+                tag_id: The tag ID.
 
-        Returns:
-        -------
-            The tag object.
+            """
+            await self.parent.request(
+                f"device_tag({tag_id})",
+                method=METH_DELETE,
+            )
 
-        """
-        response = await self._request(
-            "device_tag",
-            method=METH_POST,
-            data={"device": device_id, "tag_key": key, "value": value},
-        )
-        return Tag.from_dict(response)
+    @dataclass
+    class DeviceVariable:
+        """Namespace for handling device variable related requests."""
 
-    async def update_device_tag(
-        self,
-        device_id: int,
-        key: str,
-        value: str,
-    ) -> None:
-        """Update a tag from a device.
+        parent: BalenaCloud
 
-        Args:
-        ----
-            device_id: The device ID.
-            key: The tag key.
-            value: The new tag value.
+        async def get_all(
+            self,
+            device_id: int | None = None,
+            device_uuid: str | None = None,
+        ) -> list[EnvironmentVariable]:
+            """Get all environment variables from a device.
 
-        """
-        await self._request(
-            f"device_tag(device={device_id},tag_key='{key}')",
-            method=METH_PATCH,
-            data={"value": value},
-        )
+            Args:
+            ----
+                device_id: The device ID (optional).
+                device_uuid: The device UUID (optional).
 
-    async def remove_device_tag(self, tag_id: int) -> None:
-        """Remove a tag from a device.
+            Returns:
+            -------
+                A list of environment variables in the device.
 
-        Args:
-        ----
-            tag_id: The tag ID.
+            """
+            if device_id is None and device_uuid is None:
+                msg = "You must provide either a device ID or a device UUID."
+                raise BalenaCloudParameterValidationError(msg)
 
-        """
-        await self._request(
-            f"device_tag({tag_id})",
-            method=METH_DELETE,
-        )
+            if device_id is not None:
+                response = await self.parent.request(
+                    "device_environment_variable",
+                    params={"$filter": f"device eq {device_id}"},
+                )
+            else:
+                response = await self.parent.request(
+                    "device_environment_variable",
+                    params={"$filter": f"device/any(d:d/uuid eq '{device_uuid}')"},
+                )
+            return [EnvironmentVariable.from_dict(item) for item in response["d"]]
 
-    # Device - Environment Variables
-    async def get_device_variables(
-        self,
-        device_id: int | None = None,
-        device_uuid: str | None = None,
-    ) -> list[EnvironmentVariable]:
-        """Get all environment variables from a device.
+        async def add(
+            self,
+            device_id: int,
+            name: str,
+            value: str,
+        ) -> EnvironmentVariable:
+            """Add a new environment variable to a device.
 
-        Args:
-        ----
-            device_id: The device ID (optional).
-            device_uuid: The device UUID (optional).
+            Args:
+            ----
+                device_id: The device ID.
+                name: The variable name.
+                value: The variable value.
 
-        Returns:
-        -------
-            A list of environment variables in the device.
-
-        """
-        if device_id is None and device_uuid is None:
-            msg = "You must provide either a device ID or a device UUID."
-            raise BalenaCloudParameterValidationError(msg)
-
-        if device_id is not None:
-            response = await self._request(
+            """
+            response = await self.parent.request(
                 "device_environment_variable",
-                params={"$filter": f"device eq {device_id}"},
+                method=METH_POST,
+                data={"device": device_id, "name": name, "value": value},
             )
-        else:
-            response = await self._request(
-                "device_environment_variable",
-                params={"$filter": f"device/any(d:d/uuid eq '{device_uuid}')"},
+            return EnvironmentVariable.from_dict(response)
+
+        async def update(self, variable_id: int, value: str) -> None:
+            """Update an environment variable from a device.
+
+            Args:
+            ----
+                variable_id: The variable ID.
+                value: The new variable value.
+
+            """
+            await self.parent.request(
+                f"device_environment_variable({variable_id})",
+                method=METH_PATCH,
+                data={"value": value},
             )
-        return [EnvironmentVariable.from_dict(item) for item in response["d"]]
 
-    async def add_device_variable(
-        self,
-        device_id: int,
-        name: str,
-        value: str,
-    ) -> EnvironmentVariable:
-        """Add a new environment variable to a device.
+        async def remove(self, variable_id: int) -> None:
+            """Remove an environment variable from a device.
 
-        Args:
-        ----
-            device_id: The device ID.
-            name: The variable name.
-            value: The variable value.
+            Args:
+            ----
+                variable_id: The variable ID.
 
-        """
-        response = await self._request(
-            "device_environment_variable",
-            method=METH_POST,
-            data={"device": device_id, "name": name, "value": value},
-        )
-        return EnvironmentVariable.from_dict(response)
-
-    async def update_device_variable(self, variable_id: int, value: str) -> None:
-        """Update an environment variable from a device.
-
-        Args:
-        ----
-            variable_id: The variable ID.
-            value: The new variable value.
-
-        """
-        await self._request(
-            f"device_environment_variable({variable_id})",
-            method=METH_PATCH,
-            data={"value": value},
-        )
-
-    async def remove_device_variable(self, variable_id: int) -> None:
-        """Remove an environment variable from a device.
-
-        Args:
-        ----
-            variable_id: The variable ID.
-
-        """
-        await self._request(
-            f"device_environment_variable({variable_id})",
-            method=METH_DELETE,
-        )
+            """
+            await self.parent.request(
+                f"device_environment_variable({variable_id})",
+                method=METH_DELETE,
+            )
 
     async def close(self) -> None:
         """Close open client session."""

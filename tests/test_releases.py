@@ -30,7 +30,7 @@ async def test_get_release(
             text=load_fixtures("releases/release.json"),
         ),
     )
-    release = await balena_cloud_client.get_release(release_id=1)
+    release = await balena_cloud_client.release.get(release_id=1)
     assert release == snapshot
 
 
@@ -44,4 +44,4 @@ async def test_remove_release(
         "/v7/release(1)",
         "DELETE",
     )
-    await balena_cloud_client.remove_release(release_id=1)
+    await balena_cloud_client.release.remove(release_id=1)

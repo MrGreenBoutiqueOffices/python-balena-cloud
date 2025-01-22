@@ -31,7 +31,7 @@ async def test_get_fleets(
             text=load_fixtures("fleets/all_fleets.json"),
         ),
     )
-    fleets = await balena_cloud_client.get_fleets()
+    fleets = await balena_cloud_client.fleet.get_all()
     assert fleets == snapshot
 
 
@@ -65,11 +65,11 @@ async def test_get_fleet(
     # Get the fleet based on the parameter key
     fleet = None
     if param_key == "fleet_id":
-        fleet = await balena_cloud_client.get_fleet(fleet_id=param_value)
+        fleet = await balena_cloud_client.fleet.get(fleet_id=param_value)
     elif param_key == "fleet_slug":
-        fleet = await balena_cloud_client.get_fleet(fleet_slug=param_value)
+        fleet = await balena_cloud_client.fleet.get(fleet_slug=param_value)
     elif param_key == "fleet_name":
-        fleet = await balena_cloud_client.get_fleet(fleet_name=param_value)
+        fleet = await balena_cloud_client.fleet.get(fleet_name=param_value)
     assert fleet == snapshot
 
 
@@ -89,7 +89,7 @@ async def test_get_fleet_devices(
             text=load_fixtures("fleets/fleet_devices.json"),
         ),
     )
-    devices = await balena_cloud_client.get_fleet_devices(fleet_id=1)
+    devices = await balena_cloud_client.fleet.get_devices(fleet_id=1)
     assert devices == snapshot
 
 
@@ -109,7 +109,7 @@ async def test_get_filtered_fleet_devices(
             text=load_fixtures("fleets/fleet_devices.json"),
         ),
     )
-    devices = await balena_cloud_client.get_fleet_devices(
+    devices = await balena_cloud_client.fleet.get_devices(
         fleet_id=1, filters={"is_online": True}
     )
     assert devices == snapshot
@@ -131,7 +131,7 @@ async def test_get_organization_fleets(
             text=load_fixtures("fleets/all_fleets.json"),
         ),
     )
-    fleets = await balena_cloud_client.get_organization_fleets(org_handle="test-org")
+    fleets = await balena_cloud_client.organization.get_fleets(org_handle="test-org")
     assert fleets == snapshot
 
 
@@ -151,7 +151,7 @@ async def test_get_fleet_releases(
             text=load_fixtures("fleets/fleet_releases.json"),
         ),
     )
-    releases = await balena_cloud_client.get_fleet_releases(fleet_id=1)
+    releases = await balena_cloud_client.fleet.get_releases(fleet_id=1)
     assert releases == snapshot
 
 
@@ -171,7 +171,7 @@ async def test_get_filtered_fleet_releases(
             text=load_fixtures("fleets/fleet_releases.json"),
         ),
     )
-    releases = await balena_cloud_client.get_fleet_releases(
+    releases = await balena_cloud_client.fleet.get_releases(
         fleet_id=1, filters={"is_final": True}
     )
     assert releases == snapshot
