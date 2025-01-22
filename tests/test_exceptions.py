@@ -113,6 +113,12 @@ async def test_resource_parameter_error(
             BalenaCloudResourceNotFoundError,
             {"device_id": 1},
         ),
+        (
+            "/v7/release(1)",
+            "get_release",
+            BalenaCloudResourceNotFoundError,
+            {"release_id": 1},
+        ),
     ],
 )
 async def test_resource_not_found_error(

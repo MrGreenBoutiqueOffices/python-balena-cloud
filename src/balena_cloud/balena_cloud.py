@@ -1,5 +1,6 @@
 """Asynchronous Python client for Balena Cloud."""
 
+# pylint: disable=too-many-public-methods
 from __future__ import annotations
 
 import asyncio
@@ -19,7 +20,7 @@ from .exceptions import (
     BalenaCloudParameterValidationError,
     BalenaCloudResourceNotFoundError,
 )
-from .models import Device, EnvironmentVariable, Fleet, Organization, Tag
+from .models import Device, EnvironmentVariable, Fleet, Organization, Release, Tag
 
 VERSION = metadata.version(__package__)
 
@@ -227,22 +228,92 @@ class BalenaCloud:
             raise BalenaCloudResourceNotFoundError(msg)
         return Fleet.from_dict(response["d"][0])
 
-    async def get_fleet_devices(self, fleet_id: int) -> list[Device]:
+    async def get_fleet_devices(
+        self,
+        fleet_id: int,
+        filters: dict[str, Any] | None = None,
+    ) -> list[Device]:
         """Get all devices from a specific fleet.
 
         Args:
         ----
             fleet_id: The fleet ID.
+            filters: Filters to apply to the request (optional).
 
         Returns:
         -------
-            A list of devices in the fleet.
+            A list of devices in the fleet with the applied filters (if any).
 
         """
-        response = await self._request(
-            "device", params={"$filter": f"belongs_to__application eq '{fleet_id}'"}
-        )
+        if filters is None:
+            response = await self._request(
+                "device",
+                params={"$filter": f"belongs_to__application eq {fleet_id}"},
+            )
+        else:
+            query = f"belongs_to__application eq {fleet_id}"
+            for key, value in filters.items():
+                query += f" and {key} eq '{value}'"
+            response = await self._request("device", params={"$filter": query})
         return [Device.from_dict(item) for item in response["d"]]
+
+    async def get_fleet_releases(
+        self,
+        fleet_id: int,
+        filters: dict[str, Any] | None = None,
+    ) -> list[Release]:
+        """Get all releases from a specific fleet.
+
+        Args:
+        ----
+            fleet_id: The fleet ID.
+            filters: Filters to apply to the request (optional).
+
+        Returns:
+        -------
+            A list of releases in the fleet with the applied filters (if any).
+
+        """
+        if filters is None:
+            response = await self._request(
+                "release",
+                params={"$filter": f"belongs_to__application eq {fleet_id}"},
+            )
+        else:
+            query = f"belongs_to__application eq {fleet_id}"
+            for key, value in filters.items():
+                query += f" and {key} eq '{value}'"
+            response = await self._request("release", params={"$filter": query})
+        return [Release.from_dict(item) for item in response["d"]]
+
+    # Releases
+    async def get_release(self, release_id: int) -> Release:
+        """Get a release by its ID.
+
+        Args:
+        ----
+            release_id: The release ID.
+
+        Returns:
+        -------
+            A release object.
+
+        """
+        response = await self._request(f"release({release_id})")
+        if not response["d"]:
+            msg = "No release found with the provided ID."
+            raise BalenaCloudResourceNotFoundError(msg)
+        return Release.from_dict(response["d"][0])
+
+    async def remove_release(self, release_id: int) -> None:
+        """Remove a release.
+
+        Args:
+        ----
+            release_id: The release ID.
+
+        """
+        await self._request(f"release({release_id})", method=METH_DELETE)
 
     # Devices
     async def get_device(

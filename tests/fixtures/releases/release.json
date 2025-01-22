@@ -1,0 +1,42 @@
+{
+  "d": [
+    {
+      "belongs_to__application": {
+        "__id": 123456
+      },
+      "commit": "abcd1234efgh5678ijkl9012mnop3456",
+      "composition": {
+        "version": "2.4",
+        "services": {}
+      },
+      "contract": null,
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "end_timestamp": "2025-01-01T00:05:00.000Z",
+      "id": 987654,
+      "invalidation_reason": null,
+      "is_created_by__user": {
+        "__id": 112233
+      },
+      "is_final": true,
+      "is_finalized_at__date": "2025-01-01T00:00:01.000Z",
+      "is_invalidated": false,
+      "is_passing_tests": true,
+      "known_issue_list": null,
+      "note": null,
+      "phase": null,
+      "release_version": null,
+      "revision": 0,
+      "semver": "0.1.0",
+      "semver_build": "",
+      "semver_major": 0,
+      "semver_minor": 1,
+      "semver_patch": 0,
+      "semver_prerelease": "",
+      "source": "cloud",
+      "start_timestamp": "2025-01-01T00:00:00.000Z",
+      "status": "success",
+      "update_timestamp": "2025-01-01T00:05:00.000Z",
+      "variant": ""
+    }
+  ]
+}
