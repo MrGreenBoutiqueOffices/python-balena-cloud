@@ -14,32 +14,32 @@ async def main() -> None:
 
         print("Get environment variables from a device")
         print("=======================================")
-        env_variables = await client.get_device_variables(device_id=device_id)
+        env_variables = await client.device_variable.get_all(device_id=device_id)
         print(env_variables)
 
         print()
         print("Add an environment variable to a device")
         print("=======================================")
-        await client.add_device_variable(
+        await client.device_variable.add(
             device_id=device_id, name="MY_ENV_VAR", value="my_value"
         )
-        env_variables = await client.get_device_variables(device_id=device_id)
+        env_variables = await client.device_variable.get_all(device_id=device_id)
         print(env_variables)
 
         print()
         print("Update an environment variable from a device")
         print("============================================")
-        await client.update_device_variable(
+        await client.device_variable.update(
             variable_id=env_variables[0].id, value="new_value"
         )
-        env_variables = await client.get_device_variables(device_id=device_id)
+        env_variables = await client.device_variable.get_all(device_id=device_id)
         print(env_variables)
 
         print()
         print("Delete an environment variable from a device")
         print("============================================")
-        await client.remove_device_variable(variable_id=env_variables[0].id)
-        env_variables = await client.get_device_variables(device_id=device_id)
+        await client.device_variable.remove(variable_id=env_variables[0].id)
+        env_variables = await client.device_variable.get_all(device_id=device_id)
         print(env_variables)
 
 

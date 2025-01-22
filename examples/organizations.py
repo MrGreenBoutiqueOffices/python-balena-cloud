@@ -12,20 +12,20 @@ async def main() -> None:
     async with BalenaCloud(token="") as client:
         print("Get all organizations")
         print("=====================")
-        organizations = await client.get_organizations()
+        organizations = await client.organization.get_all()
         for organization in organizations:
             print(organization)
 
         print()
         print("Get a organization by ID or handle")
         print("==================================")
-        organization = await client.get_organization(org_handle=organizations[0].handle)
+        organization = await client.organization.get(org_handle=organizations[0].handle)
         print(organization)
 
         print()
         print("Getting all fleets from the organization:")
         print("=========================================")
-        fleets = await client.get_organization_fleets(org_handle=organization.handle)
+        fleets = await client.organization.get_fleets(org_handle=organization.handle)
         for fleet in fleets:
             print(fleet)
 

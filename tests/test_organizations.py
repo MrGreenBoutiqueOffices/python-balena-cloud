@@ -31,7 +31,7 @@ async def test_get_organizations(
             text=load_fixtures("organizations/all_organizations.json"),
         ),
     )
-    organizations = await balena_cloud_client.get_organizations()
+    organizations = await balena_cloud_client.organization.get_all()
     assert organizations == snapshot
 
 
@@ -64,9 +64,9 @@ async def test_get_organization(
     # Get the organization based on the parameter key
     organization = None
     if param_key == "org_id":
-        organization = await balena_cloud_client.get_organization(org_id=param_value)
+        organization = await balena_cloud_client.organization.get(org_id=param_value)
     elif param_key == "org_handle":
-        organization = await balena_cloud_client.get_organization(
+        organization = await balena_cloud_client.organization.get(
             org_handle=param_value
         )
     assert organization == snapshot

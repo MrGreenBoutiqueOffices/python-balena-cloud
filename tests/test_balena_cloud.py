@@ -28,7 +28,7 @@ async def test_json_request(
             headers={"Content-Type": "application/json"},
         ),
     )
-    await balena_cloud_client._request("test")
+    await balena_cloud_client.request("test")
     await balena_cloud_client.close()
 
 
@@ -44,7 +44,7 @@ async def test_internal_session(aresponses: ResponsesMockServer) -> None:
         ),
     )
     async with BalenaCloud(token="FAKE_TOKEN") as client:  # noqa: S106
-        await client._request("test")
+        await client.request("test")
 
 
 async def test_timeout(aresponses: ResponsesMockServer) -> None:
@@ -62,7 +62,7 @@ async def test_timeout(aresponses: ResponsesMockServer) -> None:
     async with ClientSession() as session:
         client = BalenaCloud(token="FAKE_TOKEN", session=session, request_timeout=0.1)  # noqa: S106
         with pytest.raises(BalenaCloudConnectionError):
-            assert await client._request("test")
+            assert await client.request("test")
 
 
 async def test_content_type(
@@ -81,7 +81,7 @@ async def test_content_type(
         ),
     )
     with pytest.raises(BalenaCloudError):
-        assert await balena_cloud_client._request("test")
+        assert await balena_cloud_client.request("test")
 
 
 async def test_client_error() -> None:
@@ -96,4 +96,4 @@ async def test_client_error() -> None:
             ),
             pytest.raises(BalenaCloudConnectionError),
         ):
-            assert await client._request("test")
+            assert await client.request("test")

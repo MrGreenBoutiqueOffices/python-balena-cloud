@@ -37,7 +37,7 @@ async def test_client_response_error(
         ),
     )
     with pytest.raises(BalenaCloudConnectionError):
-        await balena_cloud_client._request("test")
+        await balena_cloud_client.request("test")
 
 
 async def test_unauthorized_error(
@@ -54,19 +54,30 @@ async def test_unauthorized_error(
         ),
     )
     with pytest.raises(BalenaCloudAuthenticationError):
-        await balena_cloud_client._request("test")
+        await balena_cloud_client.request("test")
 
 
 @pytest.mark.parametrize(
-    ("endpoint", "method", "exception"),
+    ("endpoint", "namespace", "method", "exception"),
     [
-        ("/v7/organization", "get_organization", BalenaCloudParameterValidationError),
-        ("/v7/application", "get_fleet", BalenaCloudParameterValidationError),
-        ("/v7/device", "get_device", BalenaCloudParameterValidationError),
-        ("/v7/device_tag", "get_device_tags", BalenaCloudParameterValidationError),
+        (
+            "/v7/organization",
+            "organization",
+            "get",
+            BalenaCloudParameterValidationError,
+        ),
+        ("/v7/application", "fleet", "get", BalenaCloudParameterValidationError),
+        ("/v7/device", "device", "get", BalenaCloudParameterValidationError),
+        (
+            "/v7/device_tag",
+            "device_tag",
+            "get_all",
+            BalenaCloudParameterValidationError,
+        ),
         (
             "/v7/device_variable",
-            "get_device_variables",
+            "device_variable",
+            "get_all",
             BalenaCloudParameterValidationError,
         ),
     ],
@@ -75,6 +86,7 @@ async def test_resource_parameter_error(
     aresponses: ResponsesMockServer,
     balena_cloud_client: BalenaCloud,
     endpoint: str,
+    namespace: str,
     method: str,
     exception: type[BalenaCloudError],
 ) -> None:
@@ -88,34 +100,37 @@ async def test_resource_parameter_error(
             headers={"Content-Type": "application/json"},
         ),
     )
+    client = getattr(balena_cloud_client, namespace)
+    method_to_call = getattr(client, method)
+
     with pytest.raises(exception):
-        await getattr(balena_cloud_client, method)()
+        await method_to_call()
 
 
 @pytest.mark.parametrize(
-    ("endpoint", "method", "exception", "params"),
+    ("endpoint", "namespace", "exception", "params"),
     [
         (
             "/v7/organization(1)",
-            "get_organization",
+            "organization",
             BalenaCloudResourceNotFoundError,
             {"org_id": 1},
         ),
         (
             "/v7/application(1)",
-            "get_fleet",
+            "fleet",
             BalenaCloudResourceNotFoundError,
             {"fleet_id": 1},
         ),
         (
             "/v7/device(1)",
-            "get_device",
+            "device",
             BalenaCloudResourceNotFoundError,
             {"device_id": 1},
         ),
         (
             "/v7/release(1)",
-            "get_release",
+            "release",
             BalenaCloudResourceNotFoundError,
             {"release_id": 1},
         ),
@@ -125,7 +140,7 @@ async def test_resource_not_found_error(
     aresponses: ResponsesMockServer,
     balena_cloud_client: BalenaCloud,
     endpoint: str,
-    method: str,
+    namespace: str,
     exception: type[BalenaCloudError],
     params: dict[str, int],
 ) -> None:
@@ -141,4 +156,4 @@ async def test_resource_not_found_error(
         ),
     )
     with pytest.raises(exception):
-        await getattr(balena_cloud_client, method)(**params)
+        await getattr(balena_cloud_client, namespace).get(**params)

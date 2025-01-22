@@ -14,30 +14,30 @@ async def main() -> None:
 
         print("Get a tags from a device")
         print("========================")
-        tags = await client.get_device_tags(device_id=device_id)
+        tags = await client.device_tag.get_all(device_id=device_id)
         print(tags)
 
         print()
         print("Create a tag for a device")
         print("=========================")
-        await client.add_device_tag(device_id=device_id, key="test", value="test")
-        tags = await client.get_device_tags(device_id=device_id)
+        await client.device_tag.add(device_id=device_id, key="test", value="test")
+        tags = await client.device_tag.get_all(device_id=device_id)
         print(tags)
 
         print()
         print("Change a tag from a device")
         print("===========================")
-        await client.update_device_tag(
+        await client.device_tag.update(
             device_id=device_id, key="test", value="new value"
         )
-        tags = await client.get_device_tags(device_id=device_id)
+        tags = await client.device_tag.get_all(device_id=device_id)
         print(tags)
 
         print()
         print("Delete a tag from a device")
         print("===========================")
-        await client.remove_device_tag(tag_id=tags[0].id)
-        tags = await client.get_device_tags(device_id=device_id)
+        await client.device_tag.remove(tag_id=tags[0].id)
+        tags = await client.device_tag.get_all(device_id=device_id)
         print(tags)
 
 

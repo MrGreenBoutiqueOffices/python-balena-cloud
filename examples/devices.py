@@ -14,25 +14,25 @@ async def main() -> None:
 
         print("Get a device by ID")
         print("==================")
-        device = await client.get_device(device_id=device_id)
+        device = await client.device.get(device_id=device_id)
         print(device)
 
         print()
         print("Change device name")
         print("==================")
-        await client.update_device(
+        await client.device.update(
             device_id=device_id, data={"device_name": "My Device"}
         )
-        new_device = await client.get_device(device_id=device_id)
+        new_device = await client.device.get(device_id=device_id)
         print(new_device)
 
         print()
         print(f"Revert device name to {device.name}")
         print("=================================")
-        await client.update_device(
+        await client.device.update(
             device_id=device_id, data={"device_name": device.name}
         )
-        device = await client.get_device(device_id=device_id)
+        device = await client.device.get(device_id=device_id)
         print(device)
 
 
