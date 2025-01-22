@@ -75,7 +75,7 @@ async def test_unauthorized_error(
             BalenaCloudParameterValidationError,
         ),
         (
-            "/v7/device_variable",
+            "/v7/device_environment_variable",
             "device_variable",
             "get_all",
             BalenaCloudParameterValidationError,
@@ -127,6 +127,18 @@ async def test_resource_parameter_error(
             "device",
             BalenaCloudResourceNotFoundError,
             {"device_id": 1},
+        ),
+        (
+            "/v7/device_environment_variable(1)",
+            "device_variable",
+            BalenaCloudResourceNotFoundError,
+            {"variable_id": 1},
+        ),
+        (
+            "/v7/device_tag(1)",
+            "device_tag",
+            BalenaCloudResourceNotFoundError,
+            {"tag_id": 1},
         ),
         (
             "/v7/release(1)",

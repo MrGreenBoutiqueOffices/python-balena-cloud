@@ -18,6 +18,12 @@ async def main() -> None:
         print(tags)
 
         print()
+        print("Get single device tag")
+        print("=====================")
+        tag = await client.device_tag.get(tag_id=tags[0].id)
+        print(tag)
+
+        print()
         print("Create a tag for a device")
         print("=========================")
         await client.device_tag.add(device_id=device_id, key="test", value="test")

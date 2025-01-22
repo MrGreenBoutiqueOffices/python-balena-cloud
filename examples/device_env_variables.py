@@ -18,6 +18,12 @@ async def main() -> None:
         print(env_variables)
 
         print()
+        print("Get single environment variable")
+        print("===============================")
+        env_variable = await client.device_variable.get(variable_id=env_variables[0].id)
+        print(env_variable)
+
+        print()
         print("Add an environment variable to a device")
         print("=======================================")
         await client.device_variable.add(
