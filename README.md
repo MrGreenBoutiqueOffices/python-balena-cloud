@@ -52,7 +52,7 @@ async def main() -> None:
     """Show example on using this package."""
 
     async with BalenaCloud(token="YOUR_API_TOKEN") as client:
-        organizations = await client.get_organizations()
+        organizations = await client.organization.get_all()
         for organization in organizations:
             print(organization)
 
