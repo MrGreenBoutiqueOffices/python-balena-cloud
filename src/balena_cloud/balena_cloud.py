@@ -481,7 +481,7 @@ class BalenaCloud:
             ----
                 device_id: The device ID.
                 key: The tag key.
-                value: The tag value.
+                value (String): The tag value.
 
             Returns:
             -------
@@ -491,7 +491,7 @@ class BalenaCloud:
             response = await self.parent.request(
                 "device_tag",
                 method=METH_POST,
-                data={"device": device_id, "tag_key": key, "value": value},
+                data={"device": device_id, "tag_key": key, "value": str(value)},
             )
             return Tag.from_dict(response)
 
@@ -600,13 +600,13 @@ class BalenaCloud:
             ----
                 device_id: The device ID.
                 name: The variable name.
-                value: The variable value.
+                value (String): The variable value.
 
             """
             response = await self.parent.request(
                 "device_environment_variable",
                 method=METH_POST,
-                data={"device": device_id, "name": name, "value": value},
+                data={"device": device_id, "name": name, "value": str(value)},
             )
             return EnvironmentVariable.from_dict(response)
 
