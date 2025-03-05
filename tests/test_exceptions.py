@@ -11,6 +11,7 @@ from aresponses import ResponsesMockServer
 
 from balena_cloud.exceptions import (
     BalenaCloudAuthenticationError,
+    BalenaCloudConflictError,
     BalenaCloudConnectionError,
     BalenaCloudError,
     BalenaCloudParameterValidationError,
@@ -169,3 +170,22 @@ async def test_resource_not_found_error(
     )
     with pytest.raises(exception):
         await getattr(balena_cloud_client, namespace).get(**params)
+
+
+async def test_conflict_error(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the conflict error."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/test",
+        "GET",
+        aresponses.Response(
+            status=409,
+            headers={"Content-Type": "application/json"},
+            text='{"message": "Conflict error"}',
+        ),
+    )
+    with pytest.raises(BalenaCloudConflictError):
+        assert await balena_cloud_client.request("test")
