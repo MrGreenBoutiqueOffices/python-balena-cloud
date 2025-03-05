@@ -3,6 +3,7 @@
 from .balena_cloud import BalenaCloud
 from .exceptions import (
     BalenaCloudAuthenticationError,
+    BalenaCloudConflictError,
     BalenaCloudConnectionError,
     BalenaCloudError,
     BalenaCloudParameterValidationError,
@@ -13,6 +14,7 @@ from .models import Device, EnvironmentVariable, Fleet, Organization, Release, T
 __all__ = [
     "BalenaCloud",
     "BalenaCloudAuthenticationError",
+    "BalenaCloudConflictError",
     "BalenaCloudConnectionError",
     "BalenaCloudError",
     "BalenaCloudParameterValidationError",

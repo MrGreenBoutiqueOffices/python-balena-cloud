@@ -15,6 +15,7 @@ from yarl import URL
 
 from .exceptions import (
     BalenaCloudAuthenticationError,
+    BalenaCloudConflictError,
     BalenaCloudConnectionError,
     BalenaCloudError,
     BalenaCloudParameterValidationError,
@@ -91,6 +92,11 @@ class BalenaCloud:
                     json=data,
                     ssl=True,
                 )
+
+                if response.status == 409:
+                    response_data = await response.json()
+                    raise BalenaCloudConflictError(response_data, response.status)
+
                 response.raise_for_status()
         except TimeoutError as exception:
             msg = "Timeout occurred while connecting to the Balena Cloud API."
