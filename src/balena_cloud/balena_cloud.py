@@ -479,7 +479,7 @@ class BalenaCloud:
             self,
             device_id: int,
             key: str,
-            value: str,
+            value: object,
         ) -> Tag:
             """Add a new tag to a device.
 
@@ -505,7 +505,7 @@ class BalenaCloud:
             self,
             device_id: int,
             key: str,
-            value: str,
+            value: object,
         ) -> None:
             """Update a tag from a device.
 
@@ -519,7 +519,7 @@ class BalenaCloud:
             await self.parent.request(
                 f"device_tag(device={device_id},tag_key='{key}')",
                 method=METH_PATCH,
-                data={"value": value},
+                data={"value": str(value)},
             )
 
         async def remove(self, tag_id: int) -> None:
@@ -598,7 +598,7 @@ class BalenaCloud:
             self,
             device_id: int,
             name: str,
-            value: str,
+            value: object,
         ) -> EnvironmentVariable:
             """Add a new environment variable to a device.
 
@@ -616,7 +616,7 @@ class BalenaCloud:
             )
             return EnvironmentVariable.from_dict(response)
 
-        async def update(self, variable_id: int, value: str) -> None:
+        async def update(self, variable_id: int, value: object) -> None:
             """Update an environment variable from a device.
 
             Args:
@@ -628,7 +628,7 @@ class BalenaCloud:
             await self.parent.request(
                 f"device_environment_variable({variable_id})",
                 method=METH_PATCH,
-                data={"value": value},
+                data={"value": str(value)},
             )
 
         async def remove(self, variable_id: int) -> None:
