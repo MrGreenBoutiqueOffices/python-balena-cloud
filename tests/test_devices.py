@@ -275,6 +275,34 @@ async def test_update_device_variable(
     await balena_cloud_client.device_variable.update(variable_id=1, value="test_value")
 
 
+async def test_update_device_tag_numeric_value(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the update_device_tag method with a numeric value."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_tag(device=1,tag_key='test_key')",
+        "PATCH",
+    )
+    await balena_cloud_client.device_tag.update(
+        device_id=1, key="test_key", value=1414930252
+    )
+
+
+async def test_update_device_variable_numeric_value(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the update_device_variable method with a numeric value."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_environment_variable(1)",
+        "PATCH",
+    )
+    await balena_cloud_client.device_variable.update(variable_id=1, value=1414930252)
+
+
 async def test_remove_device_variable(
     aresponses: ResponsesMockServer,
     balena_cloud_client: BalenaCloud,
