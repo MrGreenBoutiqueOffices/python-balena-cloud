@@ -58,6 +58,15 @@ class Release(DataClassDictMixin):
 
 
 @dataclass
+class Service(DataClassDictMixin):
+    """Class to represent a service in Balena Cloud."""
+
+    id: int
+    name: str = field(metadata=field_options(alias="service_name"))
+    created_at: datetime
+
+
+@dataclass
 class Device(DataClassDictMixin):
     """Class to represent a device in Balena Cloud."""
 

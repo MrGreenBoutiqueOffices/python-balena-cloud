@@ -177,6 +177,104 @@ async def test_get_filtered_fleet_releases(
     assert releases == snapshot
 
 
+async def test_get_service(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_service method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service(1)",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/service.json"),
+        ),
+    )
+    service = await balena_cloud_client.service.get(service_id=1)
+    assert service == snapshot
+
+
+@pytest.mark.parametrize(
+    ("param_key", "param_value"),
+    [
+        ("fleet_id", 1),
+        ("fleet_name", "Test Fleet"),
+        ("fleet_slug", "test-slug"),
+    ],
+)
+async def test_get_services(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+    param_key: str,
+    param_value: Any,
+) -> None:
+    """Test the get_services method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_services.json"),
+        ),
+    )
+    services = None
+    if param_key == "fleet_id":
+        services = await balena_cloud_client.service.get_all(fleet_id=param_value)
+    elif param_key == "fleet_name":
+        services = await balena_cloud_client.service.get_all(fleet_name=param_value)
+    elif param_key == "fleet_slug":
+        services = await balena_cloud_client.service.get_all(fleet_slug=param_value)
+    assert services == snapshot
+
+
+async def test_get_fleet_services(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_services method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_services.json"),
+        ),
+    )
+    services = await balena_cloud_client.fleet.get_services(fleet_id=1)
+    assert services == snapshot
+
+
+async def test_get_filtered_fleet_services(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_services method with filters."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_services.json"),
+        ),
+    )
+    services = await balena_cloud_client.fleet.get_services(
+        fleet_id=1, filters={"service_name": "main"}
+    )
+    assert services == snapshot
+
+
 async def test_get_fleet_service_variable(
     aresponses: ResponsesMockServer,
     snapshot: SnapshotAssertion,

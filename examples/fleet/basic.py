@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 
-from balena_cloud import BalenaCloud, Device, Fleet
+from balena_cloud import BalenaCloud, Device, Fleet, Service
 
 
 async def main() -> None:
@@ -40,6 +40,13 @@ async def main() -> None:
         )
         for device in filtered_devices:
             print(device)
+
+        print()
+        print("Getting all services from a fleet:")
+        print("==================================")
+        services: list[Service] = await client.fleet.get_services(fleet_id=fleet_id)
+        for service in services:
+            print(service)
 
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@ from .resources import (
     FleetServiceVariableResource,
     OrganizationResource,
     ReleaseResource,
+    ServiceResource,
 )
 
 VERSION: str = metadata.version(__package__)  # ty:ignore[invalid-argument-type]
@@ -134,6 +135,7 @@ class BalenaCloud:
         self.organization = OrganizationResource(parent=self)
         self.fleet = FleetResource(parent=self)
         self.release = ReleaseResource(parent=self)
+        self.service = ServiceResource(parent=self)
         self.device = DeviceResource(parent=self)
         self.device_tag = DeviceTagResource(parent=self)
         self.device_variable = DeviceVariableResource(parent=self)

@@ -11,7 +11,7 @@ from balena_cloud.exceptions import (
     BalenaCloudParameterValidationError,
     BalenaCloudResourceNotFoundError,
 )
-from balena_cloud.models import Device, EnvironmentVariable, Fleet, Release
+from balena_cloud.models import Device, EnvironmentVariable, Fleet, Release, Service
 
 
 @dataclass
@@ -127,6 +127,96 @@ class FleetResource:
                 query += f" and {key} eq '{value}'"
             response = await self.parent.request("release", params={"$filter": query})
         return [Release.from_dict(item) for item in response["d"]]
+
+    async def get_services(
+        self,
+        fleet_id: int,
+        filters: dict[str, Any] | None = None,
+    ) -> list[Service]:
+        """Get all services from a specific fleet.
+
+        Args:
+        ----
+            fleet_id: The fleet ID.
+            filters: Filters to apply to the request (optional).
+
+        Returns:
+        -------
+            A list of services in the fleet with the applied filters (if any).
+
+        """
+        if filters is None:
+            response = await self.parent.request(
+                "service",
+                params={"$filter": f"application eq {fleet_id}"},
+            )
+        else:
+            query = f"application eq {fleet_id}"
+            for key, value in filters.items():
+                query += f" and {key} eq '{value}'"
+            response = await self.parent.request("service", params={"$filter": query})
+        return [Service.from_dict(item) for item in response["d"]]
+
+
+@dataclass
+class ServiceResource:
+    """Resource client for service related requests."""
+
+    parent: Any
+
+    async def get(self, service_id: int) -> Service:
+        """Get a service by its ID.
+
+        Args:
+        ----
+            service_id: The service ID.
+
+        Returns:
+        -------
+            A service object.
+
+        """
+        response = await self.parent.request(f"service({service_id})")
+        if not response["d"]:
+            msg = "No service found with the provided ID."
+            raise BalenaCloudResourceNotFoundError(msg)
+        return Service.from_dict(response["d"][0])
+
+    async def get_all(
+        self,
+        fleet_id: int | None = None,
+        fleet_name: str | None = None,
+        fleet_slug: str | None = None,
+    ) -> list[Service]:
+        """Get all services from a fleet.
+
+        Args:
+        ----
+            fleet_id: The fleet ID (optional).
+            fleet_name: The fleet name (optional).
+            fleet_slug: The fleet slug (optional).
+
+        Returns:
+        -------
+            A list of services in the fleet.
+
+        """
+        if fleet_id is None and fleet_name is None and fleet_slug is None:
+            msg = "You must provide either a fleet ID, a fleet name or a fleet slug."
+            raise BalenaCloudParameterValidationError(msg)
+
+        if fleet_id is not None:
+            filter_query = f"application eq {fleet_id}"
+        elif fleet_name is not None:
+            filter_query = f"application/app_name eq '{fleet_name}'"
+        else:
+            filter_query = f"application/slug eq '{fleet_slug}'"
+
+        response = await self.parent.request(
+            "service",
+            params={"$filter": filter_query},
+        )
+        return [Service.from_dict(item) for item in response["d"]]
 
 
 @dataclass
