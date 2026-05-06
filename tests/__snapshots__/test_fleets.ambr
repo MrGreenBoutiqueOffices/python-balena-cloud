@@ -1,4 +1,7 @@
 # serializer version: 1
+# name: test_add_fleet_service_variable
+  EnvironmentVariable(id=1, name='VARIABLE_1', value='1234567890', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc))
+# ---
 # name: test_get_filtered_fleet_devices
   list([
     Device(id=1, name='Device_1', status='Idle', uuid='00000000000000000000000000000001', is_online=True, is_web_accessible=True, is_undervolted=False, latitude=0.0, longitude=0.0),
@@ -30,6 +33,15 @@
   list([
     Release(id=987654, status='success', semver='0.0.0', semver_prerelease='', revision=0, created_at=datetime.datetime(2025, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_final=True, is_invalidated=False, is_passing_tests=True),
     Release(id=987654, status='success', semver='0.1.0', semver_prerelease='', revision=0, created_at=datetime.datetime(2025, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), is_final=True, is_invalidated=False, is_passing_tests=True),
+  ])
+# ---
+# name: test_get_fleet_service_variable
+  EnvironmentVariable(id=1, name='VARIABLE_1', value='1234567890', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc))
+# ---
+# name: test_get_fleet_service_variables
+  list([
+    EnvironmentVariable(id=1, name='VARIABLE_1', value='1234567890', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc)),
+    EnvironmentVariable(id=2, name='VARIABLE_2', value='TEST_1', created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc)),
   ])
 # ---
 # name: test_get_fleets

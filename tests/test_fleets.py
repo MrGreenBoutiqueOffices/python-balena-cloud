@@ -175,3 +175,108 @@ async def test_get_filtered_fleet_releases(
         fleet_id=1, filters={"is_final": True}
     )
     assert releases == snapshot
+
+
+async def test_get_fleet_service_variable(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_environment_variable(1)",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_service_variable.json"),
+        ),
+    )
+    variable = await balena_cloud_client.fleet_service_variable.get(variable_id=1)
+    assert variable == snapshot
+
+
+async def test_get_fleet_service_variables(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_fleet_service_variables method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_environment_variable",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/fleet_service_variables.json"),
+        ),
+    )
+    variables = await balena_cloud_client.fleet_service_variable.get_all(service_id=1)
+    assert variables == snapshot
+
+
+async def test_add_fleet_service_variable(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the add_fleet_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_environment_variable",
+        "POST",
+        aresponses.Response(
+            status=201,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("fleets/post_fleet_service_variable.json"),
+        ),
+    )
+    variable = await balena_cloud_client.fleet_service_variable.add(
+        service_id=1, name="test_name", value="test_value"
+    )
+    assert variable == snapshot
+
+
+async def test_update_fleet_service_variable(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the update_fleet_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_environment_variable(1)",
+        "PATCH",
+    )
+    await balena_cloud_client.fleet_service_variable.update(
+        variable_id=1, value="test_value"
+    )
+
+
+async def test_update_fleet_service_variable_numeric_value(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the update_fleet_service_variable method with a numeric value."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_environment_variable(1)",
+        "PATCH",
+    )
+    await balena_cloud_client.fleet_service_variable.update(
+        variable_id=1, value=1414930252
+    )
+
+
+async def test_remove_fleet_service_variable(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the remove_fleet_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_environment_variable(1)",
+        "DELETE",
+    )
+    await balena_cloud_client.fleet_service_variable.remove(variable_id=1)
