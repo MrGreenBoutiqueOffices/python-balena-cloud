@@ -67,6 +67,15 @@ class Service(DataClassDictMixin):
 
 
 @dataclass
+class ServiceInstall(DataClassDictMixin):
+    """Class to represent a service install in Balena Cloud."""
+
+    id: int
+    created_at: datetime
+    service_name: str | None = None
+
+
+@dataclass
 class Device(DataClassDictMixin):
     """Class to represent a device in Balena Cloud."""
 

@@ -16,6 +16,7 @@ from .models import (
     Organization,
     Release,
     Service,
+    ServiceInstall,
     Tag,
 )
 
@@ -33,5 +34,6 @@ __all__ = [
     "Organization",
     "Release",
     "Service",
+    "ServiceInstall",
     "Tag",
 ]

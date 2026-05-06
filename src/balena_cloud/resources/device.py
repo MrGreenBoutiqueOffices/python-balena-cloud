@@ -11,7 +11,7 @@ from balena_cloud.exceptions import (
     BalenaCloudParameterValidationError,
     BalenaCloudResourceNotFoundError,
 )
-from balena_cloud.models import Device, EnvironmentVariable, Tag
+from balena_cloud.models import Device, EnvironmentVariable, ServiceInstall, Tag
 
 
 @dataclass
@@ -74,6 +74,115 @@ class DeviceResource:
 
         """
         await self.parent.request(f"device({device_id})", method=METH_DELETE)
+
+    async def get_service_installs(
+        self,
+        device_id: int | None = None,
+        device_uuid: str | None = None,
+        *,
+        expand_service: bool = False,
+    ) -> list[ServiceInstall]:
+        """Get all service installs from a device.
+
+        Args:
+        ----
+            device_id: The device ID (optional).
+            device_uuid: The device UUID (optional).
+            expand_service: Expand service names in the response.
+
+        Returns:
+        -------
+            A list of service installs in the device.
+
+        """
+        return await ServiceInstallResource(parent=self.parent).get_all(
+            device_id=device_id,
+            device_uuid=device_uuid,
+            expand_service=expand_service,
+        )
+
+
+@dataclass
+class ServiceInstallResource:
+    """Resource client for service install related requests."""
+
+    parent: Any
+
+    async def get(
+        self,
+        service_install_id: int,
+        *,
+        expand_service: bool = False,
+    ) -> ServiceInstall:
+        """Get a service install by its ID.
+
+        Args:
+        ----
+            service_install_id: The service install ID.
+            expand_service: Expand service names in the response.
+
+        Returns:
+        -------
+            A service install object.
+
+        """
+        params = None
+        if expand_service:
+            params = {
+                "$expand": "installs__service($select=service_name)",
+            }
+
+        response = await self.parent.request(
+            f"service_install({service_install_id})",
+            params=params,
+        )
+        if not response["d"]:
+            msg = "No service install found with the provided ID."
+            raise BalenaCloudResourceNotFoundError(msg)
+        return self._from_dict(response["d"][0])
+
+    async def get_all(
+        self,
+        device_id: int | None = None,
+        device_uuid: str | None = None,
+        *,
+        expand_service: bool = False,
+    ) -> list[ServiceInstall]:
+        """Get all service installs from a device.
+
+        Args:
+        ----
+            device_id: The device ID (optional).
+            device_uuid: The device UUID (optional).
+            expand_service: Expand service names in the response.
+
+        Returns:
+        -------
+            A list of service installs in the device.
+
+        """
+        if device_id is None and device_uuid is None:
+            msg = "You must provide either a device ID or a device UUID."
+            raise BalenaCloudParameterValidationError(msg)
+
+        if device_id is not None:
+            filter_query = f"device eq {device_id}"
+        else:
+            filter_query = f"device/uuid eq '{device_uuid}'"
+
+        params = {"$filter": filter_query}
+        if expand_service:
+            params["$expand"] = "installs__service($select=service_name)"
+
+        response = await self.parent.request("service_install", params=params)
+        return [self._from_dict(item) for item in response["d"]]
+
+    @staticmethod
+    def _from_dict(data: dict[str, Any]) -> ServiceInstall:
+        service = data.get("installs__service")
+        if isinstance(service, dict) and service.get("service_name") is not None:
+            data = {**data, "service_name": service["service_name"]}
+        return ServiceInstall.from_dict(data)
 
 
 @dataclass
