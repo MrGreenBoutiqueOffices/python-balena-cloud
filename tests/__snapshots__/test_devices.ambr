@@ -1,9 +1,9 @@
 # serializer version: 1
-# name: test_add_device_tag
-  Tag(id=1, key='tag_1', value='value_1')
-# ---
 # name: test_add_device_service_variable
   EnvironmentVariable(id=1, name='VARIABLE_1', value='1234567890', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc))
+# ---
+# name: test_add_device_tag
+  Tag(id=1, key='tag_1', value='value_1')
 # ---
 # name: test_add_device_variable
   EnvironmentVariable(id=1, name='VARIABLE_1', value='1234567890', created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc))
@@ -14,21 +14,10 @@
 # name: test_get_device[device_uuid-test-uuid-/v7/device(uuid='test-uuid')]
   Device(id=1, name='Device_1', status='Idle', uuid='00000000000000000000000000000001', is_online=True, is_web_accessible=True, is_undervolted=False, latitude=0.0, longitude=0.0)
 # ---
-# name: test_get_device_tag
-  Tag(id=1, key='tag_1', value='value_1')
-# ---
-# name: test_get_device_tags[device_id-1]
+# name: test_get_device_service_installs
   list([
-    Tag(id=1, key='tag_1', value='value_1'),
-    Tag(id=2, key='tag_2', value='value_2'),
-    Tag(id=3, key='tag_3', value='value_3'),
-  ])
-# ---
-# name: test_get_device_tags[device_uuid-test-uuid]
-  list([
-    Tag(id=1, key='tag_1', value='value_1'),
-    Tag(id=2, key='tag_2', value='value_2'),
-    Tag(id=3, key='tag_3', value='value_3'),
+    ServiceInstall(id=1, created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), service_name='main'),
+    ServiceInstall(id=2, created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc), service_name='worker'),
   ])
 # ---
 # name: test_get_device_service_variable
@@ -46,10 +35,21 @@
     EnvironmentVariable(id=2, name='VARIABLE_2', value='TEST_1', created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc)),
   ])
 # ---
-# name: test_get_device_service_installs
+# name: test_get_device_tag
+  Tag(id=1, key='tag_1', value='value_1')
+# ---
+# name: test_get_device_tags[device_id-1]
   list([
-    ServiceInstall(id=1, created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), service_name='main'),
-    ServiceInstall(id=2, created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc), service_name='worker'),
+    Tag(id=1, key='tag_1', value='value_1'),
+    Tag(id=2, key='tag_2', value='value_2'),
+    Tag(id=3, key='tag_3', value='value_3'),
+  ])
+# ---
+# name: test_get_device_tags[device_uuid-test-uuid]
+  list([
+    Tag(id=1, key='tag_1', value='value_1'),
+    Tag(id=2, key='tag_2', value='value_2'),
+    Tag(id=3, key='tag_3', value='value_3'),
   ])
 # ---
 # name: test_get_device_variable
@@ -80,5 +80,17 @@
   list([
     ServiceInstall(id=1, created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), service_name='main'),
     ServiceInstall(id=2, created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc), service_name='worker'),
+  ])
+# ---
+# name: test_get_service_installs_no_expand[device_id-1]
+  list([
+    ServiceInstall(id=1, created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), service_name=None),
+    ServiceInstall(id=2, created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc), service_name=None),
+  ])
+# ---
+# name: test_get_service_installs_no_expand[device_uuid-test-uuid]
+  list([
+    ServiceInstall(id=1, created_at=datetime.datetime(2024, 1, 1, 0, 0, tzinfo=datetime.timezone.utc), service_name=None),
+    ServiceInstall(id=2, created_at=datetime.datetime(2024, 1, 2, 0, 0, tzinfo=datetime.timezone.utc), service_name=None),
   ])
 # ---

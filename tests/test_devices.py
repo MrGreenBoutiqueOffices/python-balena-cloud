@@ -163,6 +163,43 @@ async def test_get_device_service_installs(
     assert service_installs == snapshot
 
 
+@pytest.mark.parametrize(
+    ("param_key", "param_value"),
+    [
+        ("device_id", 1),
+        ("device_uuid", "test-uuid"),
+    ],
+)
+async def test_get_service_installs_no_expand(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+    param_key: str,
+    param_value: Any,
+) -> None:
+    """Test get_all service installs without service name expansion."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_install",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/service_installs_no_expand.json"),
+        ),
+    )
+    service_installs = None
+    if param_key == "device_id":
+        service_installs = await balena_cloud_client.service_install.get_all(
+            device_id=param_value,
+        )
+    elif param_key == "device_uuid":
+        service_installs = await balena_cloud_client.service_install.get_all(
+            device_uuid=param_value,
+        )
+    assert service_installs == snapshot
+
+
 async def test_get_device_tag(
     aresponses: ResponsesMockServer,
     snapshot: SnapshotAssertion,
