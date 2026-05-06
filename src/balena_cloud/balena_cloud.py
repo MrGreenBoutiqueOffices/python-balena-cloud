@@ -132,6 +132,7 @@ class BalenaCloud:
         self.device_tag = self.DeviceTag(parent=self)
         self.device_variable = self.DeviceVariable(parent=self)
         self.device_service_variable = self.DeviceServiceVariable(parent=self)
+        self.fleet_service_variable = self.FleetServiceVariable(parent=self)
 
     @dataclass
     class Organization:
@@ -762,6 +763,109 @@ class BalenaCloud:
             """
             await self.parent.request(
                 f"device_service_environment_variable({variable_id})",
+                method=METH_DELETE,
+            )
+
+    @dataclass
+    class FleetServiceVariable:
+        """Namespace for handling fleet service variable related requests."""
+
+        parent: BalenaCloud
+
+        async def get(self, variable_id: int) -> EnvironmentVariable:
+            """Get a service environment variable by its ID from a fleet.
+
+            Args:
+            ----
+                variable_id: The variable ID.
+
+            Returns:
+            -------
+                An environment variable object.
+
+            """
+            response = await self.parent.request(
+                f"service_environment_variable({variable_id})"
+            )
+            if not response["d"]:
+                msg = (
+                    "No fleet service environment variable found with the provided ID."
+                )
+                raise BalenaCloudResourceNotFoundError(msg)
+            return EnvironmentVariable.from_dict(response["d"][0])
+
+        async def get_all(
+            self,
+            service_id: int | None = None,
+        ) -> list[EnvironmentVariable]:
+            """Get all service environment variables from a fleet service.
+
+            Args:
+            ----
+                service_id: The service ID.
+
+            Returns:
+            -------
+                A list of service environment variables in the fleet service.
+
+            """
+            if service_id is None:
+                msg = "You must provide a service ID."
+                raise BalenaCloudParameterValidationError(msg)
+
+            response = await self.parent.request(
+                "service_environment_variable",
+                params={"$filter": f"service eq {service_id}"},
+            )
+            return [EnvironmentVariable.from_dict(item) for item in response["d"]]
+
+        async def add(
+            self,
+            service_id: int,
+            name: str,
+            value: object,
+        ) -> EnvironmentVariable:
+            """Add a new service environment variable to a fleet.
+
+            Args:
+            ----
+                service_id: The service ID.
+                name: The variable name.
+                value (String): The variable value.
+
+            """
+            response = await self.parent.request(
+                "service_environment_variable",
+                method=METH_POST,
+                data={"service": service_id, "name": name, "value": str(value)},
+            )
+            return EnvironmentVariable.from_dict(response)
+
+        async def update(self, variable_id: int, value: object) -> None:
+            """Update a service environment variable from a fleet.
+
+            Args:
+            ----
+                variable_id: The variable ID.
+                value: The new variable value.
+
+            """
+            await self.parent.request(
+                f"service_environment_variable({variable_id})",
+                method=METH_PATCH,
+                data={"value": str(value)},
+            )
+
+        async def remove(self, variable_id: int) -> None:
+            """Remove a service environment variable from a fleet.
+
+            Args:
+            ----
+                variable_id: The variable ID.
+
+            """
+            await self.parent.request(
+                f"service_environment_variable({variable_id})",
                 method=METH_DELETE,
             )
 
