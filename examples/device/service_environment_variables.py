@@ -11,7 +11,14 @@ async def main() -> None:
     """Show example of using the Balena Cloud API."""
     async with BalenaCloud(token="") as client:
         device_id: int = 1234567
-        service_install_id: int = 7654321
+
+        print("Get service installs from a device")
+        print("==================================")
+        service_installs = await client.service_install.get_all(
+            device_id=device_id,
+            expand_service=True,
+        )
+        print(service_installs)
 
         print("Get service environment variables from a device")
         print("================================================")
@@ -32,7 +39,7 @@ async def main() -> None:
         print("Add a service environment variable to a device")
         print("==============================================")
         await client.device_service_variable.add(
-            service_install_id=service_install_id,
+            service_install_id=service_installs[0].id,
             name="MY_ENV_VAR",
             value="my_value",
         )

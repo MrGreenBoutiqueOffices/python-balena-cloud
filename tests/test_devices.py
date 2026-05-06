@@ -78,6 +78,128 @@ async def test_remove_device(
     await balena_cloud_client.device.remove(device_id=1)
 
 
+async def test_get_service_install(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_service_install method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_install(1)",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/service_install.json"),
+        ),
+    )
+    service_install = await balena_cloud_client.service_install.get(
+        service_install_id=1,
+        expand_service=True,
+    )
+    assert service_install == snapshot
+
+
+@pytest.mark.parametrize(
+    ("param_key", "param_value"),
+    [
+        ("device_id", 1),
+        ("device_uuid", "test-uuid"),
+    ],
+)
+async def test_get_service_installs(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+    param_key: str,
+    param_value: Any,
+) -> None:
+    """Test the get_service_installs method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_install",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/service_installs.json"),
+        ),
+    )
+    service_installs = None
+    if param_key == "device_id":
+        service_installs = await balena_cloud_client.service_install.get_all(
+            device_id=param_value,
+            expand_service=True,
+        )
+    elif param_key == "device_uuid":
+        service_installs = await balena_cloud_client.service_install.get_all(
+            device_uuid=param_value,
+            expand_service=True,
+        )
+    assert service_installs == snapshot
+
+
+async def test_get_device_service_installs(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_device_service_installs method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_install",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/service_installs.json"),
+        ),
+    )
+    service_installs = await balena_cloud_client.device.get_service_installs(
+        device_id=1,
+        expand_service=True,
+    )
+    assert service_installs == snapshot
+
+
+@pytest.mark.parametrize(
+    ("param_key", "param_value"),
+    [
+        ("device_id", 1),
+        ("device_uuid", "test-uuid"),
+    ],
+)
+async def test_get_service_installs_no_expand(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+    param_key: str,
+    param_value: Any,
+) -> None:
+    """Test get_all service installs without service name expansion."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/service_install",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/service_installs_no_expand.json"),
+        ),
+    )
+    service_installs = None
+    if param_key == "device_id":
+        service_installs = await balena_cloud_client.service_install.get_all(
+            device_id=param_value,
+        )
+    elif param_key == "device_uuid":
+        service_installs = await balena_cloud_client.service_install.get_all(
+            device_uuid=param_value,
+        )
+    assert service_installs == snapshot
+
+
 async def test_get_device_tag(
     aresponses: ResponsesMockServer,
     snapshot: SnapshotAssertion,

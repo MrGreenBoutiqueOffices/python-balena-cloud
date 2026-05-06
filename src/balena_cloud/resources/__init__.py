@@ -5,6 +5,7 @@ from .device import (
     DeviceServiceVariableResource,
     DeviceTagResource,
     DeviceVariableResource,
+    ServiceInstallResource,
 )
 from .fleet import FleetResource, FleetServiceVariableResource, ServiceResource
 from .organization import OrganizationResource
@@ -19,5 +20,6 @@ __all__ = [
     "FleetServiceVariableResource",
     "OrganizationResource",
     "ReleaseResource",
+    "ServiceInstallResource",
     "ServiceResource",
 ]

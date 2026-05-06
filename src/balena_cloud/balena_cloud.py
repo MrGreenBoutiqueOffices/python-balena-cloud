@@ -27,6 +27,7 @@ from .resources import (
     FleetServiceVariableResource,
     OrganizationResource,
     ReleaseResource,
+    ServiceInstallResource,
     ServiceResource,
 )
 
@@ -136,6 +137,7 @@ class BalenaCloud:
         self.fleet = FleetResource(parent=self)
         self.release = ReleaseResource(parent=self)
         self.service = ServiceResource(parent=self)
+        self.service_install = ServiceInstallResource(parent=self)
         self.device = DeviceResource(parent=self)
         self.device_tag = DeviceTagResource(parent=self)
         self.device_variable = DeviceVariableResource(parent=self)
