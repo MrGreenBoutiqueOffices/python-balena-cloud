@@ -314,3 +314,125 @@ async def test_remove_device_variable(
         "DELETE",
     )
     await balena_cloud_client.device_variable.remove(variable_id=1)
+
+
+async def test_get_device_service_variable(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the get_device_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_service_environment_variable(1)",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/device_service_variable.json"),
+        ),
+    )
+    variable = await balena_cloud_client.device_service_variable.get(variable_id=1)
+    assert variable == snapshot
+
+
+@pytest.mark.parametrize(
+    ("param_key", "param_value"),
+    [
+        ("device_id", 1),
+        ("device_uuid", "test-uuid"),
+    ],
+)
+async def test_get_device_service_variables(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+    param_key: str,
+    param_value: Any,
+) -> None:
+    """Test the get_device_service_variables method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_service_environment_variable",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/device_service_variables.json"),
+        ),
+    )
+    variables = None
+    if param_key == "device_id":
+        variables = await balena_cloud_client.device_service_variable.get_all(
+            device_id=param_value
+        )
+    elif param_key == "device_uuid":
+        variables = await balena_cloud_client.device_service_variable.get_all(
+            device_uuid=param_value
+        )
+    assert variables == snapshot
+
+
+async def test_add_device_service_variable(
+    aresponses: ResponsesMockServer,
+    snapshot: SnapshotAssertion,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the add_device_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_service_environment_variable",
+        "POST",
+        aresponses.Response(
+            status=201,
+            headers={"Content-Type": "application/json"},
+            text=load_fixtures("devices/post_device_service_variable.json"),
+        ),
+    )
+    variable = await balena_cloud_client.device_service_variable.add(
+        service_install_id=1, name="test_name", value="test_value"
+    )
+    assert variable == snapshot
+
+
+async def test_update_device_service_variable(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the update_device_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_service_environment_variable(1)",
+        "PATCH",
+    )
+    await balena_cloud_client.device_service_variable.update(
+        variable_id=1, value="test_value"
+    )
+
+
+async def test_update_device_service_variable_numeric_value(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the update_device_service_variable method with a numeric value."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_service_environment_variable(1)",
+        "PATCH",
+    )
+    await balena_cloud_client.device_service_variable.update(
+        variable_id=1, value=1414930252
+    )
+
+
+async def test_remove_device_service_variable(
+    aresponses: ResponsesMockServer,
+    balena_cloud_client: BalenaCloud,
+) -> None:
+    """Test the remove_device_service_variable method."""
+    aresponses.add(
+        "api.balena-cloud.com",
+        "/v7/device_service_environment_variable(1)",
+        "DELETE",
+    )
+    await balena_cloud_client.device_service_variable.remove(variable_id=1)

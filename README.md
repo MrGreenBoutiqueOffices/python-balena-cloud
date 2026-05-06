@@ -22,7 +22,7 @@ Asynchronous Python client for [Balena Cloud][balena].
 
 ## About
 
-With this python package it's possible to get your organizations, fleets and devices. But also change or add new devices tags and environment variables.
+With this python package it's possible to get your organizations, fleets and devices. But also change or add new devices tags, environment variables and service environment variables.
 
 ## Installation
 
@@ -61,7 +61,8 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-More examples can be found in the [examples folder](./examples/).
+More examples can be found in the [examples folder](./examples/), grouped by
+resource namespace.
 
 ## Contributing
 
