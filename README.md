@@ -141,7 +141,7 @@ or affiliation.
 
 MIT License
 
-Copyright (c) 2024-2025 NetOS
+Copyright (c) 2024-2026 NetOS/Mr.Green Offices
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -178,7 +178,7 @@ SOFTWARE.
 [downloads-url]: https://pypistats.org/packages/balena-cloud
 [last-commit-shield]: https://img.shields.io/github/last-commit/MrGreenBoutiqueOffices/python-balena-cloud.svg
 [license-shield]: https://img.shields.io/github/license/MrGreenBoutiqueOffices/python-balena-cloud.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-yellow.svg
 [pypi]: https://pypi.org/project/balena-cloud/
 [python-versions-shield]: https://img.shields.io/pypi/pyversions/balena-cloud
