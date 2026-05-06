@@ -16,7 +16,7 @@
 [![Build Status][build-shield]][build-url]
 [![Typing Status][typing-shield]][typing-url]
 [![Code Coverage][codecov-shield]][codecov-url]
-
+[![OpenSSF Scorecard][scorecard-shield]][scorecard-url]
 
 Asynchronous Python client for [Balena Cloud][balena].
 
@@ -184,6 +184,8 @@ SOFTWARE.
 [python-versions-shield]: https://img.shields.io/pypi/pyversions/balena-cloud
 [releases-shield]: https://img.shields.io/github/release/MrGreenBoutiqueOffices/python-balena-cloud.svg
 [releases]: https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/releases
+[scorecard-shield]: https://api.scorecard.dev/projects/github.com/MrGreenBoutiqueOffices/python-balena-cloud/badge
+[scorecard-url]: https://scorecard.dev/viewer/?uri=github.com/MrGreenBoutiqueOffices/python-balena-cloud
 [typing-shield]: https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/actions/workflows/typing.yaml/badge.svg
 [typing-url]: https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/actions/workflows/typing.yaml
 
