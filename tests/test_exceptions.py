@@ -93,6 +93,12 @@ async def test_unauthorized_error(
             "get_all",
             BalenaCloudParameterValidationError,
         ),
+        (
+            "/v7/service",
+            "service",
+            "get_all",
+            BalenaCloudParameterValidationError,
+        ),
     ],
 )
 async def test_resource_parameter_error(
@@ -158,6 +164,12 @@ async def test_resource_parameter_error(
             "fleet_service_variable",
             BalenaCloudResourceNotFoundError,
             {"variable_id": 1},
+        ),
+        (
+            "/v7/service(1)",
+            "service",
+            BalenaCloudResourceNotFoundError,
+            {"service_id": 1},
         ),
         (
             "/v7/device_tag(1)",

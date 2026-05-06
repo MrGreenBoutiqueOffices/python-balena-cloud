@@ -9,7 +9,15 @@ from .exceptions import (
     BalenaCloudParameterValidationError,
     BalenaCloudResourceNotFoundError,
 )
-from .models import Device, EnvironmentVariable, Fleet, Organization, Release, Tag
+from .models import (
+    Device,
+    EnvironmentVariable,
+    Fleet,
+    Organization,
+    Release,
+    Service,
+    Tag,
+)
 
 __all__ = [
     "BalenaCloud",
@@ -24,5 +32,6 @@ __all__ = [
     "Fleet",
     "Organization",
     "Release",
+    "Service",
     "Tag",
 ]
