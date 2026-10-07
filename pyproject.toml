@@ -2,9 +2,10 @@
 name = "balena-cloud"
 version = "0.0.0"
 description = "Asynchronous Python client to interact with the Balena Cloud API"
-authors = [{ name="Klaas Schoute", email="<klaas@mrgreenoffices.nl>"}]
-maintainers = [{name="Klaas Schoute", email="<klaas@mrgreenoffices.nl>"}]
+authors = [{ name="Klaas Schoute", email="klaas@mrgreenoffices.nl"}]
+maintainers = [{name="Klaas Schoute", email="klaas@mrgreenoffices.nl"}]
 license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 readme = "README.md"
 keywords = ["balena-cloud", "api", "async", "client"]
@@ -19,17 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dynamic = ["dependencies"]
-packages = [
-  { include = "balena_cloud", from = "src"},
-]
-
-[tool.poetry.dependencies]
-aiohttp = "^3.13.0"
-python = "^3.11"
-yarl = "^1.22.0"
-mashumaro = "^3.17"
-orjson = "^3.11.3"
+dependencies = ["aiohttp>=3.13.0,<4.0.0", "yarl>=1.22.0,<2.0.0", "mashumaro>=3.17,<4.0", "orjson>=3.11.3,<4.0.0"]
 
 [project.urls]
 homepage = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
@@ -38,21 +29,23 @@ documentation = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud"
 "Bug Tracker" = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/issues"
 Changelog = "https://github.com/MrGreenBoutiqueOffices/python-balena-cloud/releases"
 
-[tool.poetry.group.dev.dependencies]
-aresponses = "3.0.0"
-codespell = "2.4.3"
-covdefaults = "2.3.0"
-coverage = {version = "7.16.2", extras = ["toml"]}
-pre-commit-hooks = "6.0.0"
-prek = "0.5.5"
-pylint = "4.1.2"
-pytest = "9.1.1"
-pytest-asyncio = "1.4.0"
-pytest-cov = "7.1.0"
-ruff = "0.15.22"
-syrupy = "5.5.3"
-ty = "0.0.85"
-yamllint = "1.38.0"
+[dependency-groups]
+dev = [
+  "aresponses==3.0.0",
+  "codespell==2.4.3",
+  "covdefaults==2.3.0",
+  "coverage[toml]==7.16.2",
+  "pre-commit-hooks==6.0.0",
+  "prek==0.5.5",
+  "pylint==4.1.2",
+  "pytest==9.1.1",
+  "pytest-asyncio==1.4.0",
+  "pytest-cov==7.1.0",
+  "ruff==0.15.22",
+  "syrupy==5.5.3",
+  "ty==0.0.85",
+  "yamllint==1.38.0",
+]
 
 [tool.coverage.run]
 plugins = ["covdefaults"]
@@ -113,5 +106,5 @@ known-first-party = ["balena_cloud"]
 max-complexity = 25
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+build-backend = "uv_build"
+requires = ["uv_build>=0.12.13,<0.13"]
