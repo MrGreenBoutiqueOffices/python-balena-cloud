@@ -86,6 +86,7 @@ asyncio_mode = "auto"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinioated warning on disallowing dynamically typed expressions
+  "CPY001",  # Copyright is maintained in LICENSE, not per-file headers
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
   "D417",    # False positives in some occasions
