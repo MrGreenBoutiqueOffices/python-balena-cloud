@@ -125,3 +125,10 @@ repos:
         language: system
         types: [yaml]
         entry: poetry run yamllint
+      - id: zizmor
+        name: 🌈 Check GitHub Actions workflows with zizmor
+        language: system
+        types: [yaml]
+        files: ^\.github/workflows/.*\.ya?ml$
+        entry: poetry run zizmor --strict-collection
+        require_serial: true
