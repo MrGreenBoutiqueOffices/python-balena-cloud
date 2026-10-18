@@ -41,7 +41,7 @@ dev = [
   "pytest==9.1.1",
   "pytest-asyncio==1.4.0",
   "pytest-cov==7.1.0",
-  "ruff==0.15.22",
+  "ruff==0.17.1",
   "syrupy==6.1.1",
   "ty==0.0.88",
   "yamllint==1.38.0",
@@ -86,6 +86,7 @@ asyncio_mode = "auto"
 lint.select = ["ALL"]
 lint.ignore = [
   "ANN401",  # Opinioated warning on disallowing dynamically typed expressions
+  "CPY001",  # Copyright is maintained in LICENSE, not per-file headers
   "D203",    # Conflicts with other rules
   "D213",    # Conflicts with other rules
   "D417",    # False positives in some occasions
